@@ -5,6 +5,6 @@
     "arrowParens": "avoid",
     "endOfLine": "lf",
     "trailingComma": "none",
-    "printWidth": 120,
+    "printWidth": 80,
     "tabWidth": 4
 }
