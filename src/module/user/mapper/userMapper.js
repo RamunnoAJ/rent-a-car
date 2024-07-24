@@ -32,6 +32,35 @@ function fromDbToEntity({
     );
 }
 
+/**
+ * @param {Object} formData
+ * @returns {User}
+ */
+function fromDataToEntity({
+    email,
+    password,
+    phone,
+    name,
+    nationality,
+    address,
+    "driver-license": driverLicense
+}) {
+    return new User(
+        null,
+        null,
+        null,
+        email,
+        password,
+        phone,
+        name,
+        nationality,
+        address,
+        driverLicense,
+        "User"
+    );
+}
+
 module.exports = {
-    fromDbToEntity
+    fromDbToEntity,
+    fromDataToEntity
 };
