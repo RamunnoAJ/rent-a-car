@@ -1,20 +1,10 @@
 const User = require("../entity/User");
 
 /**
- * @param {number} id
- * @param {string} createdAt
- * @param {string} updatedAt
- * @param {string} email
- * @param {string} token
- * @param {string} phone
- * @param {string} name
- * @param {string} nationality
- * @param {string} address
- * @param {string} driverLicense
- * @param {string} role
+ * @param {Object} formData
  * @returns {User}
  */
-function fromDbToEntity(
+function fromDbToEntity({
     id,
     created_at,
     updated_at,
@@ -26,7 +16,7 @@ function fromDbToEntity(
     address,
     driver_license,
     role
-) {
+}) {
     return new User(
         id,
         created_at,

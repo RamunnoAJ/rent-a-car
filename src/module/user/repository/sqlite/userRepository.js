@@ -1,4 +1,6 @@
 const AbstractUserRepository = require("../abstractUserRepository");
+const UserNotFoundError = require("../error/userNotFoundError");
+const { fromDbToEntity } = require("../../mapper/userMapper");
 
 module.exports = class UserRepository extends AbstractUserRepository {
     /** @param {import("better-sqlite3").Database} databaseAdapater */
@@ -7,16 +9,17 @@ module.exports = class UserRepository extends AbstractUserRepository {
         this.databaseAdapter = databaseAdapater;
     }
 
-    //@returns {import("../../entity/User")}
     /**
      * @param {import("../../entity/User")} user
-     * @returns {number}
+     * @returns {import("../../entity/User")}
      */
     save(user) {
         let id;
         const isUpdate = user.id;
 
         if (isUpdate) {
+            id = user.id;
+
             const statement = this.databaseAdapter.prepare(`
                 UPDATE users SET
                     email = ?,
@@ -69,6 +72,63 @@ module.exports = class UserRepository extends AbstractUserRepository {
             id = result.lastInsertRowid;
         }
 
-        return id;
+        return this.getById(id);
+    }
+
+    /**
+     * @param {number} id
+     * @returns {import("../../entity/User")}
+     */
+    getById(id) {
+        const user = this.databaseAdapter
+            .prepare(
+                `
+            SELECT
+                id,
+                created_at,
+                updated_at,
+                email,
+                token,
+                phone,
+                name,
+                nationality,
+                address,
+                driver_license,
+                role
+            FROM users WHERE id = ?
+        `
+            )
+            .get(id);
+
+        if (user === undefined) {
+            throw new UserNotFoundError(`Couldn't find user with ID: ${id}`);
+        }
+
+        return fromDbToEntity(user);
+    }
+
+    /** @returns {Array<import("../../entity/User")>} */
+    getAll() {
+        const users = this.databaseAdapter
+            .prepare(
+                `
+                SELECT
+                    id,
+                    created_at,
+                    updated_at,
+                    email,
+                    token,
+                    phone,
+                    name,
+                    nationality,
+                    address,
+                    driver_license,
+                    role
+                FROM users
+            `
+            )
+            .all();
+
+        return users.map(user => fromDbToEntity(user));
     }
 };
