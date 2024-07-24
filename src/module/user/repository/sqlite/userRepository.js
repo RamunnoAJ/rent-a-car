@@ -131,4 +131,38 @@ module.exports = class UserRepository extends AbstractUserRepository {
 
         return users.map(user => fromDbToEntity(user));
     }
+
+    /**
+     * @param {string} email
+     * @returns {import("../../entity/User")}
+     */
+    getByEmail(email) {
+        const user = this.databaseAdapter
+            .prepare(
+                `
+            SELECT
+                id,
+                created_at,
+                updated_at,
+                email,
+                token,
+                phone,
+                name,
+                nationality,
+                address,
+                driver_license,
+                role
+            FROM users WHERE email = ?
+        `
+            )
+            .get(email);
+
+        if (user === undefined) {
+            throw new UserNotFoundError(
+                `Couldn't find user with email: ${email}`
+            );
+        }
+
+        return fromDbToEntity(user);
+    }
 };
