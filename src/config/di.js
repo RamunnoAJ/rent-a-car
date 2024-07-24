@@ -1,5 +1,6 @@
 const { default: DIContainer, factory } = require("rsdi");
 const Sqlite3Database = require("better-sqlite3");
+const bcrypt = require("bcrypt");
 
 const session = require("express-session");
 
@@ -26,7 +27,8 @@ function configureSession() {
 function addCommonDefinitions(container) {
     container.addDefinitions({
         MainDatabaseAdapter: factory(configureMainDatabaseAdapter),
-        Session: factory(configureSession)
+        Session: factory(configureSession),
+        Bcrypt: factory(() => bcrypt)
     });
 }
 

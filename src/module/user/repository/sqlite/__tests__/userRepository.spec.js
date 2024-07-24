@@ -94,7 +94,7 @@ describe("userRepository", () => {
         }).toThrow(UserNotFoundError);
     });
 
-    it("should throw an error when searching for a user that doesn't exist", () => {
+    it("should throw an error when searching for a user by id that doesn't exist", () => {
         const repository = new UserRepository(mockDb);
 
         expect(() => {
@@ -161,5 +161,37 @@ describe("userRepository", () => {
         );
 
         expect(repository.getAll()).toEqual([newUser1, newUser2]);
+    });
+
+    it("should throw an error when searching for a user by email that doesn't exist", () => {
+        const repository = new UserRepository(mockDb);
+
+        expect(() => {
+            repository.getByEmail("email@email.com");
+        }).toThrow(UserNotFoundError);
+    });
+
+    it("should return the right user when searching by email", () => {
+        const repository = new UserRepository(mockDb);
+        const newUser = repository.save(
+            new User(
+                null,
+                null,
+                null,
+                "test@mail.com",
+                "token",
+                "phone",
+                "name",
+                "nationality",
+                "address",
+                "driverLicense",
+                "role"
+            )
+        );
+
+        expect(newUser.id).toEqual(1);
+
+        const user = repository.getByEmail("test@mail.com");
+        expect(user).toEqual(newUser);
     });
 });
