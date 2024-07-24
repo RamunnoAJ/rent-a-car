@@ -1,8 +1,14 @@
-const { default: DIContainer, factory } = require("rsdi");
+const { default: DIContainer, factory, object, get } = require("rsdi");
 const Sqlite3Database = require("better-sqlite3");
 const bcrypt = require("bcrypt");
 
 const session = require("express-session");
+
+const {
+    UserController,
+    UserRepository,
+    UserService
+} = require("../module/user/user");
 
 function configureMainDatabaseAdapter() {
     return new Sqlite3Database(process.env.DB_PATH, { verbose: console.log });
@@ -32,10 +38,27 @@ function addCommonDefinitions(container) {
     });
 }
 
+/**
+ * @param {DIContainer} container
+ */
+function addUserModuleDefinitions(container) {
+    container.addDefinitions({
+        UserController: object(UserController).construct(get("UserService")),
+        UserService: object(UserService).construct(
+            get("UserRepository"),
+            get("Bcrypt")
+        ),
+        UserRepository: object(UserRepository).construct(
+            get("MainDatabaseAdapter")
+        )
+    });
+}
+
 /** @returns {DIContainer} */
 function configureDI() {
     const container = new DIContainer();
     addCommonDefinitions(container);
+    addUserModuleDefinitions(container);
 
     return container;
 }
