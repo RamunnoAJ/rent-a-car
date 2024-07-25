@@ -18,11 +18,37 @@ module.exports = class UserController extends AbstractController {
     configureRoutes(app) {
         const BASE_ROUTE = this.ROUTE_BASE;
 
+        app.get(
+            "/",
+            this.ensureAuthenticated.bind(this),
+            this.index.bind(this)
+        );
+
         app.get(`${BASE_ROUTE}/register`, this.registerForm.bind(this));
         app.post(`${BASE_ROUTE}/register`, this.register.bind(this));
         app.get(`${BASE_ROUTE}/login`, this.loginForm.bind(this));
         app.post(`${BASE_ROUTE}/login`, this.login.bind(this));
         app.post(`${BASE_ROUTE}/logout`, this.login.bind(this));
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    index(req, res) {
+        res.render("user/view/index.html");
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     * @param {Function} next
+     */
+    ensureAuthenticated(req, res, next) {
+        if (req.session.user) {
+            return next();
+        }
+        res.redirect("/auth/login");
     }
 
     /**
@@ -44,7 +70,7 @@ module.exports = class UserController extends AbstractController {
         try {
             const user = fromDataToEntity(req.body);
             await this.userService.save(user);
-            res.redirect(201, "/auth/login");
+            res.redirect("/auth/login");
             req.session.messages = ["User created correctly"];
         } catch (e) {
             req.session.errors = [e.message, e.stack];
@@ -57,8 +83,8 @@ module.exports = class UserController extends AbstractController {
      * @param {Response} res
      */
     loginForm(req, res) {
-        const { errors } = req.session;
-        res.render("user/view/login.html", { errors });
+        const { errors, messages } = req.session;
+        res.render("user/view/login.html", { errors, messages });
         req.session.messages = [];
         req.session.errors = [];
     }
