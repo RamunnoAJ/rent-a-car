@@ -10,20 +10,19 @@ module.exports = class UserController extends AbstractController {
     /** @param {import("../service/userService")} userService  */
     constructor(userService) {
         super();
-        this.AUTH_ROUTE_BASE = "/auth";
         this.ROUTE_BASE = "/auth";
         this.userService = userService;
     }
 
     /** @param {import("express")} app*/
     configureRoutes(app) {
-        const AUTH_ROUTE = this.AUTH_ROUTE_BASE;
+        const BASE_ROUTE = this.ROUTE_BASE;
 
-        app.get(`${AUTH_ROUTE}/register`, this.registerForm.bind(this));
-        app.post(`${AUTH_ROUTE}/register`, this.register.bind(this));
-        app.get(`${AUTH_ROUTE}/login`, this.loginForm.bind(this));
-        app.post(`${AUTH_ROUTE}/login`, this.login.bind(this));
-        app.post(`${AUTH_ROUTE}/logout`, this.login.bind(this));
+        app.get(`${BASE_ROUTE}/register`, this.registerForm.bind(this));
+        app.post(`${BASE_ROUTE}/register`, this.register.bind(this));
+        app.get(`${BASE_ROUTE}/login`, this.loginForm.bind(this));
+        app.post(`${BASE_ROUTE}/login`, this.login.bind(this));
+        app.post(`${BASE_ROUTE}/logout`, this.login.bind(this));
     }
 
     /**
