@@ -41,7 +41,7 @@ function fromDataToEntity({
     password,
     phone,
     name,
-    nationality,
+    country,
     address,
     "driver-license": driverLicense
 }) {
@@ -53,7 +53,7 @@ function fromDataToEntity({
         password,
         phone,
         name,
-        nationality,
+        country,
         address,
         driverLicense,
         "User"

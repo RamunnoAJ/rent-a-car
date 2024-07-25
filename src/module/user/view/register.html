@@ -3,7 +3,7 @@
     <h1 class="title is-2">Register</h1>
     <h5 class="subtitle is-5">Fill in the form and start renting cars!</h5>
 
-    <form action="/auth/register" method="POST">
+    <form action="/auth/register" method="POST" autocomplete="off">
         <div class="field mt-4">
             <label class="label" for="name">Name:</label>
             <div class="control">
@@ -27,7 +27,6 @@
             <div class="control">
                 <input class="input" id="repeat-password" name="repeat-password" type="password" placeholder="*********" />
             </div>
-            <p class="help">Repeat your password here.</p>
         </div>
         <div class="field">
             <label class="label" for="phone">Phone:</label>
@@ -75,5 +74,13 @@
             </div>
         </div>
     </form>
+    <div id="errors-container" class="notification is-danger mt-2 is-hidden">
+        <ul id="errors">
+        </ul>
+    </div>
 </section>
+{% endblock %}
+
+{% block footerScripts %}
+<script src="/public/js/user.register.js""></script>
 {% endblock %}

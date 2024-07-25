@@ -29,8 +29,9 @@ module.exports = class UserController extends AbstractController {
      */
     registerForm(req, res) {
         const { errors } = req.session;
-        console.log(req.session);
         res.render("user/view/register.html", { errors });
+        req.session.messages = [];
+        req.session.errors = [];
     }
 
     /**
@@ -41,10 +42,10 @@ module.exports = class UserController extends AbstractController {
         try {
             const user = fromDataToEntity(req.body);
             await this.userService.save(user);
-            res.redirect("user/view/login.html", { email: user.email });
+            res.redirect(201, "/login");
             req.session.messages = ["User created correctly"];
         } catch (e) {
-            req.session.messages = ["Couldn't create the user"];
+            req.session.errors = [e.message, e.stack];
             res.redirect("/auth/register");
         }
     }
