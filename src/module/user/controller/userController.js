@@ -21,6 +21,8 @@ module.exports = class UserController extends AbstractController {
 
         app.get(`${AUTH_ROUTE}/register`, this.registerForm.bind(this));
         app.post(`${AUTH_ROUTE}/register`, this.register.bind(this));
+        app.get(`${AUTH_ROUTE}/login`, this.loginForm.bind(this));
+        app.post(`${AUTH_ROUTE}/login`, this.login.bind(this));
     }
 
     /**
@@ -42,11 +44,48 @@ module.exports = class UserController extends AbstractController {
         try {
             const user = fromDataToEntity(req.body);
             await this.userService.save(user);
-            res.redirect(201, "/login");
+            res.redirect(201, "/auth/login");
             req.session.messages = ["User created correctly"];
         } catch (e) {
             req.session.errors = [e.message, e.stack];
             res.redirect("/auth/register");
+        }
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    loginForm(req, res) {
+        const { errors } = req.session;
+        res.render("user/view/login.html", { errors });
+        req.session.messages = [];
+        req.session.errors = [];
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async login(req, res) {
+        try {
+            const { email, password } = req.body;
+            const user = await this.userService.getByEmail(email);
+            const isValid = await this.userService.comparePasswords(
+                password,
+                user.token
+            );
+
+            if (isValid) {
+                req.session.user = user;
+                res.redirect("/");
+            } else {
+                req.session.errors = ["Invalid email or password"];
+                res.redirect("/auth/login");
+            }
+        } catch (e) {
+            req.session.errors = ["Invalid email or password"];
+            res.redirect("/auth/login");
         }
     }
 };

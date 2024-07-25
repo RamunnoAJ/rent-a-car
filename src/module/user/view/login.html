@@ -1,0 +1,42 @@
+{% extends "view/layout/auth_base.html" %}
+{% block body %}
+<section class="container is-max-desktop">
+    <h1 class="title is-2">Login</h1>
+    <h5 class="subtitle is-5">Fill in the form and start renting cars!</h5>
+
+    <form action="/auth/login" method="POST" autocomplete="off">
+        <div class="field">
+            <label class="label" for="email">Email:</label>
+            <div class="control">
+                <input class="input" id="email" name="email" type="email" placeholder="Email" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="password">Password:</label>
+            <div class="control">
+                <input class="input" id="password" name="password" type="password" placeholder="*********" />
+            </div>
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <button class="button is-link" type="submit">Login</button>
+            </div>
+            <div class="control">
+                <button class="button is-link is-light" type="button">Cancel</button>
+            </div>
+        </div>
+    </form>
+    <ul id="errors">
+        {% for error in errors %}
+        <li class="notification is-danger mt-2 {% if errors.length == 0 %}is-hidden{% endif %}">
+          {{ error }}
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}
+
+{% block footerScripts %}
+<script src="/public/js/user.login.js"></script>
+{% endblock %}
+
