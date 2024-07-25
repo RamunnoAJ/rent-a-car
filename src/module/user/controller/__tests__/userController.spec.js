@@ -159,4 +159,39 @@ describe("userController", () => {
         expect(req.session.errors).toEqual(["Invalid email or password"]);
         expect(res.redirect).toHaveBeenCalledWith("/auth/login");
     });
+
+    it("should logout the user and redirect to login", () => {
+        const req = {
+            session: {
+                destroy: jest.fn(callback => callback(null))
+            }
+        };
+        const res = {
+            redirect: jest.fn()
+        };
+
+        controller.logout(req, res);
+
+        expect(req.session.destroy).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith("/auth/login");
+    });
+
+    it("should handle errors during logout", () => {
+        const req = {
+            session: {
+                destroy: jest.fn(callback =>
+                    callback(new Error("Logout error"))
+                )
+            }
+        };
+        const res = {
+            redirect: jest.fn()
+        };
+
+        controller.logout(req, res);
+
+        expect(req.session.destroy).toHaveBeenCalledTimes(1);
+        expect(req.session.destroy).toHaveBeenCalledWith(expect.any(Function));
+        expect(res.redirect).toHaveBeenCalledWith("/");
+    });
 });

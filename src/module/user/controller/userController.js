@@ -23,6 +23,7 @@ module.exports = class UserController extends AbstractController {
         app.post(`${AUTH_ROUTE}/register`, this.register.bind(this));
         app.get(`${AUTH_ROUTE}/login`, this.loginForm.bind(this));
         app.post(`${AUTH_ROUTE}/login`, this.login.bind(this));
+        app.post(`${AUTH_ROUTE}/logout`, this.login.bind(this));
     }
 
     /**
@@ -87,5 +88,18 @@ module.exports = class UserController extends AbstractController {
             req.session.errors = ["Invalid email or password"];
             res.redirect("/auth/login");
         }
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    logout(req, res) {
+        req.session.destroy(err => {
+            if (err) {
+                return res.redirect("/");
+            }
+            res.redirect("/auth/login");
+        });
     }
 };
