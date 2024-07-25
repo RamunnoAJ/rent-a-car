@@ -54,7 +54,7 @@ describe("userController", () => {
             fromDataToEntity(bodyMock)
         );
         expect(redirectMock).toHaveBeenCalledTimes(1);
-        expect(redirectMock).toHaveBeenCalledWith(201, "/auth/login");
+        expect(redirectMock).toHaveBeenCalledWith("/auth/login");
     });
 
     it("should set the errors in the session and redirect to the register when there is an exception on the register", async () => {
@@ -80,7 +80,8 @@ describe("userController", () => {
 
         expect(renderMock).toHaveBeenCalledTimes(1);
         expect(renderMock).toHaveBeenCalledWith("user/view/login.html", {
-            errors: []
+            errors: [],
+            messages: []
         });
     });
 
@@ -193,5 +194,17 @@ describe("userController", () => {
         expect(req.session.destroy).toHaveBeenCalledTimes(1);
         expect(req.session.destroy).toHaveBeenCalledWith(expect.any(Function));
         expect(res.redirect).toHaveBeenCalledWith("/");
+    });
+
+    it("index should render the index.html", () => {
+        const renderMock = jest.fn();
+
+        controller.index(
+            { session: { errors: [], messages: [] } },
+            { render: renderMock }
+        );
+
+        expect(renderMock).toHaveBeenCalledTimes(1);
+        expect(renderMock).toHaveBeenCalledWith("user/view/index.html");
     });
 });

@@ -36,6 +36,13 @@
         </li>
         {% endfor %}
     </ul>
+    <ul id="messages">
+        {% for message in messages %}
+        <li class="notification is-succes mt-2 {% if messages.length == 0 %}is-hidden{% endif %}">
+          {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
 </section>
 {% endblock %}
 
