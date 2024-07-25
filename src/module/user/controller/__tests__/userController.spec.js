@@ -3,7 +3,9 @@ const UserController = require("../userController");
 
 describe("userController", () => {
     const serviceMock = {
-        save: jest.fn()
+        save: jest.fn(),
+        getByEmail: jest.fn(),
+        comparePasswords: jest.fn()
     };
 
     const controller = new UserController(serviceMock);
@@ -52,7 +54,7 @@ describe("userController", () => {
             fromDataToEntity(bodyMock)
         );
         expect(redirectMock).toHaveBeenCalledTimes(1);
-        expect(redirectMock).toHaveBeenCalledWith(201, "/login");
+        expect(redirectMock).toHaveBeenCalledWith(201, "/auth/login");
     });
 
     it("should set the errors in the session and redirect to the register when there is an exception on the register", async () => {
@@ -66,5 +68,95 @@ describe("userController", () => {
 
         expect(redirectMock).toHaveBeenCalledTimes(1);
         expect(req.session.errors).not.toEqual([]);
+    });
+
+    it("loginForm renders login.html", () => {
+        const renderMock = jest.fn();
+
+        controller.loginForm(
+            { session: { errors: [], messages: [] } },
+            { render: renderMock }
+        );
+
+        expect(renderMock).toHaveBeenCalledTimes(1);
+        expect(renderMock).toHaveBeenCalledWith("user/view/login.html", {
+            errors: []
+        });
+    });
+
+    it("should login successfully with valid credentials", async () => {
+        const req = {
+            body: { email: "test@example.com", password: "password" },
+            session: {}
+        };
+        const res = {
+            redirect: jest.fn()
+        };
+
+        const userMock = {
+            id: 1,
+            email: "test@example.com",
+            token: "hashed_password"
+        };
+        serviceMock.getByEmail.mockResolvedValue(userMock);
+        serviceMock.comparePasswords.mockResolvedValue(true);
+
+        await controller.login(req, res);
+
+        expect(serviceMock.getByEmail).toHaveBeenCalledWith("test@example.com");
+        expect(serviceMock.comparePasswords).toHaveBeenCalledWith(
+            "password",
+            "hashed_password"
+        );
+        expect(req.session.user).toEqual(userMock);
+        expect(res.redirect).toHaveBeenCalledWith("/");
+    });
+
+    it("should fail login with invalid credentials", async () => {
+        const req = {
+            body: { email: "test@example.com", password: "wrongpassword" },
+            session: {}
+        };
+        const res = {
+            redirect: jest.fn()
+        };
+
+        const userMock = {
+            id: 1,
+            email: "test@example.com",
+            token: "hashed_password"
+        };
+        serviceMock.getByEmail.mockResolvedValue(userMock);
+        serviceMock.comparePasswords.mockResolvedValue(false);
+
+        await controller.login(req, res);
+
+        expect(serviceMock.getByEmail).toHaveBeenCalledWith("test@example.com");
+        expect(serviceMock.comparePasswords).toHaveBeenCalledWith(
+            "wrongpassword",
+            "hashed_password"
+        );
+        expect(req.session.errors).toEqual(["Invalid email or password"]);
+        expect(res.redirect).toHaveBeenCalledWith("/auth/login");
+    });
+
+    it("should handle exceptions during login", async () => {
+        const req = {
+            body: { email: "test@example.com", password: "password" },
+            session: {}
+        };
+        const res = {
+            redirect: jest.fn()
+        };
+
+        serviceMock.getByEmail.mockImplementationOnce(() => {
+            throw new Error("User not found");
+        });
+
+        await controller.login(req, res);
+
+        expect(serviceMock.getByEmail).toHaveBeenCalledWith("test@example.com");
+        expect(req.session.errors).toEqual(["Invalid email or password"]);
+        expect(res.redirect).toHaveBeenCalledWith("/auth/login");
     });
 });
