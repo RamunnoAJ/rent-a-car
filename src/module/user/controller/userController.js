@@ -28,7 +28,7 @@ module.exports = class UserController extends AbstractController {
         app.post(`${BASE_ROUTE}/register`, this.register.bind(this));
         app.get(`${BASE_ROUTE}/login`, this.loginForm.bind(this));
         app.post(`${BASE_ROUTE}/login`, this.login.bind(this));
-        app.post(`${BASE_ROUTE}/logout`, this.login.bind(this));
+        app.post(`${BASE_ROUTE}/logout`, this.logout.bind(this));
     }
 
     /**
@@ -122,6 +122,7 @@ module.exports = class UserController extends AbstractController {
     logout(req, res) {
         req.session.destroy(err => {
             if (err) {
+                console.log(err);
                 return res.redirect("/");
             }
             res.redirect("/auth/login");
