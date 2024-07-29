@@ -37,6 +37,7 @@ function fromDbToEntity({
  * @returns {User}
  */
 function fromDataToEntity({
+    id,
     email,
     password,
     phone,
@@ -46,7 +47,7 @@ function fromDataToEntity({
     "driver-license": driverLicense
 }) {
     return new User(
-        null,
+        id,
         null,
         null,
         email,

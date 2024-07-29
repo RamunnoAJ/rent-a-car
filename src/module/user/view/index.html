@@ -1,7 +1,58 @@
 {% extends "view/layout/base.html" %} {% block body %}
-<h1>Welcome to the Index Page</h1>
-<p>You are logged in!</p>
-<form action="/auth/logout" method="POST">
-    <button type="submit">Logout</button>
-</form>
+<a href="/auth/register" class="button is-primary is-dark my-2">Create a new user</a>
+<div id="errors-container" class="notification is-danger mt-2 is-hidden">
+    <ul id="errors">
+    </ul>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <td>
+                #
+            </td>
+            <td>
+                Name
+            </td>
+            <td>
+                Email
+            </td>
+            <td>
+                Phone
+            </td>
+            <td>
+                Nationality
+            </td>
+            <td>
+                Address
+            </td>
+            <td>
+                Driver license
+            </td>
+            <td>
+                Actions
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in data.users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.nationality }}</td>
+            <td>{{ user.address }}</td>
+            <td>{{ user.driverLicense }}</td>
+            <td>
+                <a href="/users/edit/{{ user.id }}" class="button is-info is-dark mr-2">Edit</a>
+                <button id="delete-{{ user.id }}" class="btn-delete button is-danger is-dark">Delete</button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block footerScripts %}
+<script src="/public/js/user.index.js"></script>
 {% endblock %}
