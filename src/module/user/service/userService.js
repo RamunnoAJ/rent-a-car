@@ -67,4 +67,15 @@ module.exports = class UserService {
 
         return await this.bcrypt.compare(password, storedPassword);
     }
+
+    /**
+     * @param {User} user
+     */
+    async delete(user) {
+        if (user === undefined) {
+            throw new UserNotDefinedError();
+        }
+
+        return await this.userRepository.delete(user);
+    }
 };

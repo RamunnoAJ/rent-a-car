@@ -10,7 +10,8 @@ describe("userService", () => {
         getById: jest.fn(),
         getAll: jest.fn(),
         getByEmail: jest.fn(),
-        comparePasswords: jest.fn()
+        comparePasswords: jest.fn(),
+        delete: jest.fn()
     };
 
     const bcryptMock = {
@@ -89,5 +90,14 @@ describe("userService", () => {
             "storedPassword"
         );
         expect(result).toBe(false);
+    });
+
+    it("should call the delete method from the repository once when deleting from the service", async () => {
+        await service.delete({});
+        expect(repositoryMock.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it("should throw an error when calling the delete method from the repository without passing a user", async () => {
+        expect(service.delete).rejects.toThrow(UserNotDefinedError);
     });
 });
