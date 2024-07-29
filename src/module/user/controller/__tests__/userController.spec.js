@@ -1,11 +1,14 @@
+const User = require("../../entity/User");
 const { fromDataToEntity } = require("../../mapper/userMapper");
 const UserController = require("../userController");
 
 describe("userController", () => {
     const serviceMock = {
         save: jest.fn(),
+        getById: jest.fn(),
         getByEmail: jest.fn(),
-        comparePasswords: jest.fn()
+        comparePasswords: jest.fn(),
+        delete: jest.fn()
     };
 
     const controller = new UserController(serviceMock);
@@ -13,7 +16,8 @@ describe("userController", () => {
     it("Configure the routes correctly", () => {
         const app = {
             get: jest.fn(),
-            post: jest.fn()
+            post: jest.fn(),
+            delete: jest.fn()
         };
         controller.configureRoutes(app);
     });
@@ -206,5 +210,23 @@ describe("userController", () => {
 
         expect(renderMock).toHaveBeenCalledTimes(1);
         expect(renderMock).toHaveBeenCalledWith("user/view/index.html");
+    });
+
+    it("should call the service to delete with the id passed and redirect to '/'", async () => {
+        const FAKE_USER = new User({ id: 1 });
+        serviceMock.getById.mockImplementationOnce(() =>
+            Promise.resolve(FAKE_USER)
+        );
+        const redirectMock = jest.fn();
+
+        await controller.delete(
+            { params: { id: 1 }, session: {} },
+            { redirect: redirectMock }
+        );
+
+        expect(serviceMock.delete).toHaveBeenCalledTimes(1);
+        expect(serviceMock.delete).toHaveBeenCalledWith(FAKE_USER);
+        expect(redirectMock).toHaveBeenCalledTimes(1);
+        expect(redirectMock).toHaveBeenCalledWith("/");
     });
 });
