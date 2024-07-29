@@ -7,6 +7,7 @@ describe("userController", () => {
         save: jest.fn(),
         getById: jest.fn(),
         getByEmail: jest.fn(),
+        getAll: jest.fn(),
         comparePasswords: jest.fn(),
         delete: jest.fn()
     };
@@ -200,16 +201,18 @@ describe("userController", () => {
         expect(res.redirect).toHaveBeenCalledWith("/");
     });
 
-    it("index should render the index.html", () => {
+    it("index should render the index.html", async () => {
         const renderMock = jest.fn();
 
-        controller.index(
+        await controller.index(
             { session: { errors: [], messages: [] } },
             { render: renderMock }
         );
 
         expect(renderMock).toHaveBeenCalledTimes(1);
-        expect(renderMock).toHaveBeenCalledWith("user/view/index.html");
+        expect(renderMock).toHaveBeenCalledWith("user/view/index.html", {
+            data: { users: undefined }
+        });
     });
 
     it("should call the service to delete with the id passed and redirect to '/'", async () => {

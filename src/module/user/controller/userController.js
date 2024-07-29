@@ -43,8 +43,9 @@ module.exports = class UserController extends AbstractController {
      * @param {Request} req
      * @param {Response} res
      */
-    index(req, res) {
-        res.render("user/view/index.html");
+    async index(req, res) {
+        const users = await this.userService.getAll();
+        res.render("user/view/index.html", { data: { users } });
     }
 
     /**
