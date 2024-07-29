@@ -232,4 +232,17 @@ describe("userController", () => {
         expect(redirectMock).toHaveBeenCalledTimes(1);
         expect(redirectMock).toHaveBeenCalledWith("/");
     });
+
+    it("should set the errors in the session and redirect to the register when there is an exception on the delete method", async () => {
+        serviceMock.delete.mockImplementationOnce(() => {
+            throw Error("ejemplo");
+        });
+
+        const redirectMock = jest.fn();
+        const req = { params: { id: 1 }, session: { errors: {} } };
+        await controller.delete(req, { redirect: redirectMock });
+
+        expect(redirectMock).toHaveBeenCalledTimes(1);
+        expect(req.session.errors).not.toEqual([]);
+    });
 });
