@@ -122,7 +122,6 @@ module.exports = class UserController extends AbstractController {
     logout(req, res) {
         req.session.destroy(err => {
             if (err) {
-                console.log(err);
                 return res.redirect("/");
             }
             res.redirect("/auth/login");

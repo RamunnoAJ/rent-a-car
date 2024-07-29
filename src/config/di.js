@@ -11,7 +11,7 @@ const {
 } = require("../module/user/user");
 
 function configureMainDatabaseAdapter() {
-    return new Sqlite3Database(process.env.DB_PATH, { verbose: console.log });
+    return new Sqlite3Database(process.env.DB_PATH);
 }
 
 function configureSession() {
