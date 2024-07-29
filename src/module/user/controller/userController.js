@@ -11,12 +11,14 @@ module.exports = class UserController extends AbstractController {
     constructor(userService) {
         super();
         this.ROUTE_BASE = "/auth";
+        this.ROUTE_USER = "/users";
         this.userService = userService;
     }
 
     /** @param {import("express")} app*/
     configureRoutes(app) {
         const BASE_ROUTE = this.ROUTE_BASE;
+        const USER_ROUTE = this.ROUTE_USER;
 
         app.get(
             "/",
@@ -29,6 +31,12 @@ module.exports = class UserController extends AbstractController {
         app.get(`${BASE_ROUTE}/login`, this.loginForm.bind(this));
         app.post(`${BASE_ROUTE}/login`, this.login.bind(this));
         app.post(`${BASE_ROUTE}/logout`, this.logout.bind(this));
+
+        app.delete(
+            `${USER_ROUTE}/delete/:id`,
+            this.ensureAuthenticated.bind(this),
+            this.delete.bind(this)
+        );
     }
 
     /**
@@ -126,5 +134,25 @@ module.exports = class UserController extends AbstractController {
             }
             res.redirect("/auth/login");
         });
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async delete(req, res) {
+        try {
+            const { id } = req.params;
+            const user = await this.userService.getById(id);
+            await this.userService.delete(user);
+
+            req.session.messages = [
+                `User with ID: ${id} (${user.name}) deleted correctly`
+            ];
+        } catch (e) {
+            req.session.errors = [e.message, e.stack];
+        }
+
+        res.redirect("/");
     }
 };
