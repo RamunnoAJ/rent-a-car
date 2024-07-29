@@ -194,4 +194,47 @@ describe("userRepository", () => {
         const user = repository.getByEmail("test@mail.com");
         expect(user).toEqual(newUser);
     });
+
+    it("should return true when deleting a user", () => {
+        const repository = new UserRepository(mockDb);
+        const newUser = repository.save(
+            new User(
+                null,
+                null,
+                null,
+                "test@mail.com",
+                "token",
+                "phone",
+                "name",
+                "nationality",
+                "address",
+                "driverLicense",
+                "role"
+            )
+        );
+
+        expect(newUser.id).toEqual(1);
+
+        const user = repository.delete(newUser);
+        expect(user).toEqual(true);
+    });
+
+    it("should throw an error when deleting a user that not exists", () => {
+        const repository = new UserRepository(mockDb);
+        const newUser = new User(
+            null,
+            null,
+            null,
+            "test@mail.com",
+            "token",
+            "phone",
+            "name",
+            "nationality",
+            "address",
+            "driverLicense",
+            "role"
+        );
+
+        expect(() => repository.delete(newUser)).toThrow(UserNotFoundError);
+    });
 });

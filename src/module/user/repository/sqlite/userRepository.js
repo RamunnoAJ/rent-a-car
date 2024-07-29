@@ -165,4 +165,20 @@ module.exports = class UserRepository extends AbstractUserRepository {
 
         return fromDbToEntity(user);
     }
+
+    /**
+     * @param {import("../../entity/User")} user
+     * @returns {boolean}
+     */
+    delete(user) {
+        if (!user || !user.id) {
+            throw new UserNotFoundError();
+        }
+
+        this.databaseAdapter
+            .prepare("DELETE FROM users WHERE id = ?")
+            .run(user.id);
+
+        return true;
+    }
 };
