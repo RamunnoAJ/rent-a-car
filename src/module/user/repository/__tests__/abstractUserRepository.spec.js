@@ -36,5 +36,8 @@ describe("Abstract user repository", () => {
         expect(() => respositoryInstance.getAll()).rejects.toThrow(
             MethodNotImplementedError
         );
+        expect(() => respositoryInstance.delete()).rejects.toThrow(
+            MethodNotImplementedError
+        );
     });
 });

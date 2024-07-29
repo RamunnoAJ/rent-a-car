@@ -26,4 +26,11 @@ module.exports = class AbstractUserRepository {
     async getAll() {
         throw new MethodNotImplementedError();
     }
+
+    /**
+     * @param {import("../entity/User")} user
+     * @returns {boolean} */
+    async delete(user) {
+        throw new MethodNotImplementedError();
+    }
 };
