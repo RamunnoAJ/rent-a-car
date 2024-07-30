@@ -38,6 +38,11 @@ module.exports = class CarController extends AbstractController {
             this.ensureAuthenticated.bind(this),
             this.delete.bind(this)
         );
+        app.get(
+            `${BASE_ROUTE}/edit/:id`,
+            this.ensureAuthenticated.bind(this),
+            this.editForm.bind(this)
+        );
     }
 
     /**
@@ -75,6 +80,29 @@ module.exports = class CarController extends AbstractController {
      */
     async createForm(req, res) {
         res.render("cars/view/create.html");
+
+        req.session.messages = [];
+        req.session.errors = [];
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async editForm(req, res) {
+        try {
+            const { id } = req.params;
+            const car = await this.carService.getById(id);
+
+            const { errors, messages } = req.session;
+            res.render("cars/view/edit.html", {
+                data: { car },
+                errors,
+                messages
+            });
+        } catch (e) {
+            res.redirect("/");
+        }
 
         req.session.messages = [];
         req.session.errors = [];
