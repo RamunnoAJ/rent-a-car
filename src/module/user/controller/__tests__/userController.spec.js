@@ -24,6 +24,39 @@ describe("userController", () => {
         controller.configureRoutes(app);
     });
 
+    it("should ensure authentication when an existing user is passed", () => {
+        const req = {
+            session: {
+                user: { id: 1, username: "testuser" }
+            }
+        };
+        const res = {
+            redirect: jest.fn()
+        };
+        const next = jest.fn();
+
+        controller.ensureAuthenticated(req, res, next);
+
+        expect(next).toHaveBeenCalledTimes(1);
+        expect(res.redirect).not.toHaveBeenCalled();
+    });
+
+    it("should redirect to login when no user is authenticated", () => {
+        const req = {
+            session: {}
+        };
+        const res = {
+            redirect: jest.fn()
+        };
+        const next = jest.fn();
+
+        controller.ensureAuthenticated(req, res, next);
+
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith("/auth/login");
+        expect(next).not.toHaveBeenCalled();
+    });
+
     it("registerForm renders register.html", () => {
         const renderMock = jest.fn();
 
@@ -236,6 +269,24 @@ describe("userController", () => {
         expect(redirectMock).toHaveBeenCalledWith("/");
     });
 
+    it("should call throw an error when user tries to delete himself", async () => {
+        const FAKE_USER = new User({ id: 1 });
+        serviceMock.getById.mockImplementationOnce(() =>
+            Promise.resolve(FAKE_USER)
+        );
+        const redirectMock = jest.fn();
+
+        await controller.delete(
+            { params: { id: 1 }, session: { user: { id: 1 } } },
+            { redirect: redirectMock }
+        );
+
+        expect(serviceMock.delete).toHaveBeenCalledTimes(1);
+        expect(serviceMock.delete).toHaveBeenCalledWith(FAKE_USER);
+        expect(redirectMock).toHaveBeenCalledTimes(1);
+        expect(redirectMock).toHaveBeenCalledWith("/");
+    });
+
     it("should set the errors in the session and redirect to the register when there is an exception on the delete method", async () => {
         serviceMock.delete.mockImplementationOnce(() => {
             throw UserCantDeleteHimselfError();
@@ -300,11 +351,7 @@ describe("userController", () => {
             render: renderMock
         };
 
-        const userMock = {
-            id: 1,
-            email: "test@example.com",
-            name: "Test User"
-        };
+        const userMock = new User({ id: 1 });
         serviceMock.getById.mockResolvedValue(userMock);
 
         await controller.editForm(req, res);
