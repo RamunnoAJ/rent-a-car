@@ -38,6 +38,16 @@ module.exports = class UserController extends AbstractController {
             this.ensureAuthenticated.bind(this),
             this.delete.bind(this)
         );
+        app.post(
+            `${USER_ROUTE}/save`,
+            this.ensureAuthenticated.bind(this),
+            this.save.bind(this)
+        );
+        app.get(
+            `${USER_ROUTE}/edit/:id`,
+            this.ensureAuthenticated.bind(this),
+            this.editForm.bind(this)
+        );
     }
 
     /**
@@ -52,6 +62,9 @@ module.exports = class UserController extends AbstractController {
             errors,
             messages
         });
+
+        req.session.errors = [];
+        req.session.messages = [];
     }
 
     /**
@@ -176,6 +189,9 @@ module.exports = class UserController extends AbstractController {
      * @param {Response} res
      */
     async save(req, res) {
+        req.session.messages = [];
+        req.session.errors = [];
+
         try {
             const user = fromDataToEntity(req.body);
             const savedUser = await this.userService.save(user);
@@ -189,5 +205,28 @@ module.exports = class UserController extends AbstractController {
             req.session.errors = ["Couldn't save the user"];
             res.redirect("/");
         }
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async editForm(req, res) {
+        try {
+            const { id } = req.params;
+            const user = await this.userService.getById(id);
+
+            const { errors, messages } = req.session;
+            res.render("user/view/edit.html", {
+                data: { user },
+                errors,
+                messages
+            });
+        } catch (e) {
+            console.log(e);
+        }
+
+        req.session.messages = [];
+        req.session.errors = [];
     }
 };
