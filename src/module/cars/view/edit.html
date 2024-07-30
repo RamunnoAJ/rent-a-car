@@ -18,6 +18,7 @@
             <label class="label" for="brand">Brand:</label>
             <div class="control">
                 <input
+                    required
                     class="input"
                     value="{{ car.brand }}"
                     id="brand"
@@ -30,6 +31,7 @@
             <label class="label" for="model">Model:</label>
             <div class="control">
                 <input
+                    required
                     class="input"
                     value="{{ car.model }}"
                     id="model"
@@ -42,6 +44,7 @@
             <label class="label" for="year">Year:</label>
             <div class="control">
                 <input
+                    required
                     class="input"
                     value="{{ car.year }}"
                     id="year"
@@ -54,6 +57,7 @@
             <label class="label" for="kms">Kms:</label>
             <div class="control">
                 <input
+                    required
                     class="input"
                     value="{{ car.kms }}"
                     id="kms"
@@ -66,6 +70,7 @@
             <label class="label" for="color">Color:</label>
             <div class="control">
                 <input
+                    required
                     class="input"
                     value="{{ car.color }}"
                     id="color"
@@ -77,7 +82,7 @@
         <div class="field has-addons">
             <div class="control has-icons-left is-expanded">
                 <div class="select is-full-width">
-                    <select id="air-conditioning" name="air-conditioning">
+                    <select required id="air-conditioning" name="air-conditioning">
                         <option disabled selected>Air conditioning</option>
                         <option value="0" {% if car.airConditioning == 0 %}selected{% endif %}>No</option>
                         <option value="1" {% if car.airConditioning == 1 %}selected{% endif %}>Yes</option>
@@ -90,6 +95,7 @@
             <label class="label" for="seats">Seats:</label>
             <div class="control">
                 <input
+                    required
                     class="input"
                     value="{{ car.seats }}"
                     id="seats"
@@ -101,7 +107,7 @@
         <div class="field has-addons">
             <div class="control has-icons-left is-expanded">
                 <div class="select is-full-width">
-                    <select id="transmission" name="transmission" value="{{ car.transmission }}">
+                    <select required id="transmission" name="transmission" value="{{ car.transmission }}">
                         <option disabled selected>Transmission</option>
                         <option value="Manual" {% if car.transmission == "Manual" %}selected{% endif %}>Manual</option>
                         <option value="Semi-Automatic" {% if car.transmission == "Semi-Automatic" %}selected{% endif %}>Semi-Automatic</option>
@@ -115,6 +121,7 @@
             <label class="label" for="price">Price:</label>
             <div class="control">
                 <input
+                    required
                     class="input"
                     value="{{ car.price }}"
                     id="price"
@@ -138,5 +145,5 @@
 {% endblock %}
 
 {% block footerScripts %}
-<script src="/public/js/car.create.js""></script>
+<script src="/public/js/car.edit.js"></script>
 {% endblock %}
