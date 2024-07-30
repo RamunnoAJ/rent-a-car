@@ -1,0 +1,147 @@
+{% extends "view/layout/base.html" %} {% block body %} {% set car = data.car %}
+<section class="container is-max-desktop">
+    <h1 class="title is-3">Create car</h1>
+
+    <form action="/cars/save" method="POST" autocomplete="off">
+        <div class="field is-hidden">
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ car.id }}"
+                    id="id"
+                    name="id"
+                    type="text" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="brand">Brand:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ car.brand }}"
+                    id="brand"
+                    name="brand"
+                    type="text"
+                    placeholder="Brand" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="model">Model:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ car.model }}"
+                    id="model"
+                    name="model"
+                    type="text"
+                    placeholder="Model" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="year">Year:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ car.year }}"
+                    id="year"
+                    name="year"
+                    type="number"
+                    placeholder="2000" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="kms">Kms:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ car.kms }}"
+                    id="kms"
+                    name="kms"
+                    type="number"
+                    placeholder="2000" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="color">Color:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ car.color }}"
+                    id="color"
+                    name="color"
+                    type="text"
+                    placeholder="Color" />
+            </div>
+        </div>
+        <div class="field has-addons">
+            <div class="control has-icons-left is-expanded">
+                <div class="select is-full-width">
+                    <select id="air-conditioning" name="air-conditioning" >
+                        <option disabled selected>Air conditioning</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                    <p class="help mt-2">Does the car have air conditioning?.</p>
+                </div>
+                <span class="icon is-left">
+                    <i class="fas fa-globe"></i>
+                </span>
+            </div>
+        </div>
+        <div class="field mt-6">
+            <label class="label" for="seats">Seats:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ car.seats }}"
+                    id="seats"
+                    name="seats"
+                    type="number"
+                    placeholder="4" />
+            </div>
+        </div>
+        <div class="field has-addons">
+            <div class="control has-icons-left is-expanded">
+                <div class="select is-full-width">
+                    <select id="transmission" name="transmission" >
+                        <option disabled selected>Transmission</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Semi-Automatic">Semi-Automatic</option>
+                        <option value="Automatic">Automatic</option>
+                    </select>
+                    <p class="help mt-2">Select the type of transmission here.</p>
+                </div>
+                <span class="icon is-left">
+                    <i class="fas fa-globe"></i>
+                </span>
+            </div>
+        </div>
+        <div class="field mt-6">
+            <label class="label" for="price">Price:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ car.price }}"
+                    id="price"
+                    name="price"
+                    type="number"
+                    placeholder="149999.99" />
+            </div>
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <button class="button is-link" type="submit">Submit</button>
+            </div>
+            <div class="control">
+                <a href="/cars" class="button is-link is-light" type="button"
+                    >Cancel</a
+                >
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block footerScripts %}
+<script src="/public/js/car.create.js""></script>
+{% endblock %}

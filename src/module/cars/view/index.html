@@ -1,0 +1,57 @@
+{% extends "view/layout/base.html" %} {% block body %}
+<a href="/cars/create" class="button is-primary is-dark my-2"
+    >Create a new car</a
+>
+{% for message in messages %}
+<div class="notification is-success">{{message}}</div>
+{% endfor %} {% for error in errors %}
+<div class="notification is-danger">{{error}}</div>
+{% endfor %}
+<table class="table is-fullwidth">
+    <thead>
+        <tr>
+            <td>#</td>
+            <td>Brand</td>
+            <td>Model</td>
+            <td>Year</td>
+            <td>Kms</td>
+            <td>Color</td>
+            <td>Air conditioning</td>
+            <td>Seats</td>
+            <td>Transmission</td>
+            <td>Price</td>
+            <td>Actions</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for car in data.cars %}
+        <tr>
+            <td>{{ car.id }}</td>
+            <td>{{ car.brand }}</td>
+            <td>{{ car.model }}</td>
+            <td>{{ car.year }}</td>
+            <td>{{ car.kms }}</td>
+            <td>{{ car.color }}</td>
+            <td>{{ "Yes" if car.airConditioning else "No" }}</td>
+            <td>{{ car.seats }}</td>
+            <td>{{ car.transmission }}</td>
+            <td>{{ car.price }}</td>
+            <td>
+                <a
+                    href="/cars/edit/{{ car.id }}"
+                    class="button is-info is-dark mr-2"
+                    >Edit</a
+                >
+                <button
+                    id="delete-{{ car.id }}"
+                    class="btn-delete button is-danger is-dark">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} {% block footerScripts %}
+<script src="/public/js/car.index.js"></script>
+{% endblock %}
