@@ -16,7 +16,9 @@ const {
 } = require("../module/cars/cars");
 
 function configureMainDatabaseAdapter() {
-    return new Sqlite3Database(process.env.DB_PATH);
+    return new Sqlite3Database(
+        process.env.NODE_ENV === "test" ? ":memory:" : process.env.DB_PATH
+    );
 }
 
 function configureSession() {
