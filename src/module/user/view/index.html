@@ -1,9 +1,8 @@
 {% extends "view/layout/base.html" %} {% block body %}
 <a href="/auth/register" class="button is-primary is-dark my-2">Create a new user</a>
-<div id="errors-container" class="notification is-danger mt-2 is-hidden">
-    <ul id="errors">
-    </ul>
-</div>
+{% for error in errors %}
+<div class="notification is-danger">{{error}}</div>
+{% endfor %}
 <table class="table">
     <thead>
         <tr>

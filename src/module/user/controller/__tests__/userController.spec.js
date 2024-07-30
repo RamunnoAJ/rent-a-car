@@ -1,6 +1,7 @@
 const User = require("../../entity/User");
 const { fromDataToEntity } = require("../../mapper/userMapper");
 const UserController = require("../userController");
+const UserCantDeleteHimselfError = require("../error/UserCantDeleteHimselfError");
 
 describe("userController", () => {
     const serviceMock = {
@@ -211,7 +212,9 @@ describe("userController", () => {
 
         expect(renderMock).toHaveBeenCalledTimes(1);
         expect(renderMock).toHaveBeenCalledWith("user/view/index.html", {
-            data: { users: undefined }
+            data: { users: undefined },
+            errors: [],
+            messages: []
         });
     });
 
@@ -223,7 +226,7 @@ describe("userController", () => {
         const redirectMock = jest.fn();
 
         await controller.delete(
-            { params: { id: 1 }, session: {} },
+            { params: { id: 1 }, session: { user: { id: 2 } } },
             { redirect: redirectMock }
         );
 
@@ -235,7 +238,7 @@ describe("userController", () => {
 
     it("should set the errors in the session and redirect to the register when there is an exception on the delete method", async () => {
         serviceMock.delete.mockImplementationOnce(() => {
-            throw Error("ejemplo");
+            throw UserCantDeleteHimselfError();
         });
 
         const redirectMock = jest.fn();
