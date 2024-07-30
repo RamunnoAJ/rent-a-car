@@ -4,6 +4,14 @@ if ($errors) {
         setTimeout(() => error.classList.add("is-hidden"), 3000);
     });
 }
+
+const $messages = document.querySelectorAll(".notification.is-success");
+if ($messages) {
+    $messages.forEach(message => {
+        setTimeout(() => message.classList.add("is-hidden"), 3000);
+    });
+}
+
 const $deleteButtons = document.querySelectorAll(".btn-delete");
 
 $deleteButtons.forEach(button => {

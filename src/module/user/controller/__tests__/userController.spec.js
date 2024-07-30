@@ -248,4 +248,45 @@ describe("userController", () => {
         expect(redirectMock).toHaveBeenCalledTimes(1);
         expect(req.session.errors).not.toEqual([]);
     });
+
+    it("should save a user when there is no id", async () => {
+        serviceMock.save.mockReset();
+        const redirectMock = jest.fn();
+        const bodyMock = new User(
+            null,
+            null,
+            null,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            "User"
+        );
+
+        await controller.save(
+            { body: bodyMock, session: {} },
+            { redirect: redirectMock }
+        );
+
+        expect(serviceMock.save).toHaveBeenCalledTimes(1);
+        expect(serviceMock.save).toHaveBeenCalledWith(bodyMock);
+        expect(redirectMock).toHaveBeenCalledTimes(1);
+        expect(redirectMock).toHaveBeenCalledWith("/");
+    });
+
+    it("should set the errors in the session and redirect to the home when there is an exception on the save method", async () => {
+        serviceMock.save.mockImplementationOnce(() => {
+            throw Error();
+        });
+
+        const redirectMock = jest.fn();
+        const req = { params: { id: 1 }, session: { errors: {} } };
+        await controller.save(req, { redirect: redirectMock });
+
+        expect(redirectMock).toHaveBeenCalledTimes(1);
+        expect(req.session.errors).not.toEqual([]);
+    });
 });

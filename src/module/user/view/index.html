@@ -1,5 +1,8 @@
 {% extends "view/layout/base.html" %} {% block body %}
 <a href="/auth/register" class="button is-primary is-dark my-2">Create a new user</a>
+{% for message in messages %}
+<div class="notification is-success">{{message}}</div>
+{% endfor %}
 {% for error in errors %}
 <div class="notification is-danger">{{error}}</div>
 {% endfor %}

@@ -170,4 +170,24 @@ module.exports = class UserController extends AbstractController {
 
         res.redirect("/");
     }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async save(req, res) {
+        try {
+            const user = fromDataToEntity(req.body);
+            const savedUser = await this.userService.save(user);
+
+            req.session.messages = [
+                `User with ID:${savedUser.id} (${savedUser.name}) saved correctly`
+            ];
+
+            res.redirect("/");
+        } catch (e) {
+            req.session.errors = ["Couldn't save the user"];
+            res.redirect("/");
+        }
+    }
 };
