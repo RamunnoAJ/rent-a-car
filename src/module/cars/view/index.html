@@ -35,7 +35,7 @@
             <td>{{ "Yes" if car.airConditioning else "No" }}</td>
             <td>{{ car.seats }}</td>
             <td>{{ car.transmission }}</td>
-            <td>{{ car.price }}</td>
+            <td>${{ car.price.toFixed(2) }}</td>
             <td>
                 <a
                     href="/cars/edit/{{ car.id }}"
