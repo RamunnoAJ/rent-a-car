@@ -21,6 +21,39 @@ describe("carController", () => {
         controller.configureRoutes(app);
     });
 
+    it("should ensure authentication when an existing user is passed", () => {
+        const req = {
+            session: {
+                user: { id: 1, username: "testuser" }
+            }
+        };
+        const res = {
+            redirect: jest.fn()
+        };
+        const next = jest.fn();
+
+        controller.ensureAuthenticated(req, res, next);
+
+        expect(next).toHaveBeenCalledTimes(1);
+        expect(res.redirect).not.toHaveBeenCalled();
+    });
+
+    it("should redirect to login when no user is authenticated", () => {
+        const req = {
+            session: {}
+        };
+        const res = {
+            redirect: jest.fn()
+        };
+        const next = jest.fn();
+
+        controller.ensureAuthenticated(req, res, next);
+
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith("/auth/login");
+        expect(next).not.toHaveBeenCalled();
+    });
+
     it("index should render the index.html", async () => {
         const renderMock = jest.fn();
 

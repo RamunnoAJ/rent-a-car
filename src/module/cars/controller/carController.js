@@ -95,12 +95,11 @@ module.exports = class CarController extends AbstractController {
             req.session.messages = [
                 `Car with ID:${savedCar.id} saved correctly`
             ];
-
-            res.redirect("/cars");
         } catch (e) {
             req.session.errors = ["Couldn't save the car"];
-            res.redirect("/cars");
         }
+
+        res.redirect("/cars");
     }
 
     /**
