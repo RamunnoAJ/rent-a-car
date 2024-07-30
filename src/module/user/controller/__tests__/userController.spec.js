@@ -326,7 +326,8 @@ describe("userController", () => {
             session: { errors: [], messages: [] }
         };
         const res = {
-            render: jest.fn()
+            render: jest.fn(),
+            redirect: jest.fn()
         };
 
         serviceMock.getById.mockImplementationOnce(() => {
@@ -337,6 +338,23 @@ describe("userController", () => {
 
         expect(serviceMock.getById).toHaveBeenCalledWith(1);
         expect(res.render).not.toHaveBeenCalled();
+        expect(req.session.messages).toEqual([]);
+        expect(req.session.errors).toEqual([]);
+    });
+
+    it("should render create.html when calling createForm", async () => {
+        const req = {
+            session: { errors: [], messages: [] }
+        };
+        const res = {
+            render: jest.fn(),
+            redirect: jest.fn()
+        };
+
+        await controller.createForm(req, res);
+
+        expect(res.render).toHaveBeenCalledTimes(1);
+        expect(res.render).toHaveBeenCalledWith("user/view/create.html");
         expect(req.session.messages).toEqual([]);
         expect(req.session.errors).toEqual([]);
     });

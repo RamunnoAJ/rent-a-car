@@ -48,6 +48,11 @@ module.exports = class UserController extends AbstractController {
             this.ensureAuthenticated.bind(this),
             this.editForm.bind(this)
         );
+        app.get(
+            `${USER_ROUTE}/create`,
+            this.ensureAuthenticated.bind(this),
+            this.createForm.bind(this)
+        );
     }
 
     /**
@@ -223,8 +228,19 @@ module.exports = class UserController extends AbstractController {
                 messages
             });
         } catch (e) {
-            console.log(e);
+            res.redirect("/");
         }
+
+        req.session.messages = [];
+        req.session.errors = [];
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async createForm(req, res) {
+        res.render("user/view/create.html");
 
         req.session.messages = [];
         req.session.errors = [];
