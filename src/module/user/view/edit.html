@@ -13,13 +13,13 @@
         <div class="field mt-4">
             <label class="label" for="name">Name:</label>
             <div class="control">
-                <input class="input" value="{{ user.name }}" id="name" name="name" type="text" placeholder="Name" />
+                <input required class="input" value="{{ user.name }}" id="name" name="name" type="text" placeholder="Name" />
             </div>
         </div>
         <div class="field">
             <label class="label" for="email">Email:</label>
             <div class="control">
-                <input class="input" value="{{ user.email }}" id="email" name="email" type="email" placeholder="Email" />
+                <input required class="input" value="{{ user.email }}" id="email" name="email" type="email" placeholder="Email" />
             </div>
         </div>
         <div class="field is-hidden">
@@ -30,7 +30,7 @@
         <div class="field">
             <label class="label" for="phone">Phone:</label>
             <div class="control">
-                <input class="input" value="{{ user.phone }}" id="phone" name="phone" type="tel" placeholder="+11 1234567890" />
+                <input required class="input" value="{{ user.phone }}" id="phone" name="phone" type="tel" placeholder="+11 1234567890" />
             </div>
         </div>
         <div class="field has-addons">
@@ -55,13 +55,13 @@
         <div class="field mt-5">
             <label class="label" for="address">Address:</label>
             <div class="control">
-                <input class="input" value="{{ user.address }}" id="address" name="address" type="text" placeholder="+11 1234567890" />
+                <input required class="input" value="{{ user.address }}" id="address" name="address" type="text" placeholder="Fake street, 123" />
             </div>
         </div>
         <div class="field">
             <label class="label" for="driver-license">Driver license:</label>
             <div class="control">
-                <input class="input" value="{{ user.driverLicense }}" id="driver-license" name="driver-license" type="text" placeholder="1234567890" />
+                <input required class="input" value="{{ user.driverLicense }}" id="driver-license" name="driver-license" type="text" placeholder="1234567890" />
             </div>
         </div>
         <div class="field is-grouped is-grouped-right">
