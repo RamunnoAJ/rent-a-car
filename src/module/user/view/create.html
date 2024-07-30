@@ -1,0 +1,122 @@
+{% extends "view/layout/base.html" %} {% block body %} {% set user = data.user
+%}
+<section class="container is-max-desktop">
+    <h1 class="title is-3">Create user</h1>
+
+    <form action="/users/save" method="POST" autocomplete="off">
+        <div class="field is-hidden">
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ user.id }}"
+                    id="id"
+                    name="id"
+                    type="text" />
+            </div>
+        </div>
+        <div class="field mt-4">
+            <label class="label" for="name">Name:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ user.name }}"
+                    id="name"
+                    name="name"
+                    type="text"
+                    placeholder="Name" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="email">Email:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ user.email }}"
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Email" />
+            </div>
+        </div>
+        <div class="field is-hidden">
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ user.token }}"
+                    id="password"
+                    name="password"
+                    type="text" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="phone">Phone:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ user.phone }}"
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="+11 1234567890" />
+            </div>
+        </div>
+        <div class="field has-addons">
+            <div class="control has-icons-left is-expanded">
+                <div class="select is-full-width">
+                    <select id="country" name="country" >
+                        <option disabled selected>Country</option>
+                        <option>Argentina</option>
+                        <option>France</option>
+                        <option>Brazil</option>
+                        <option>Chile</option>
+                        <option>Denmark</option>
+                        <option>Ecuador</option>
+                    </select>
+                    <p class="help">Select your country here.</p>
+                </div>
+                <span class="icon is-left">
+                    <i class="fas fa-globe"></i>
+                </span>
+            </div>
+        </div>
+        <div class="field mt-5">
+            <label class="label" for="address">Address:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ user.address }}"
+                    id="address"
+                    name="address"
+                    type="text"
+                    placeholder="+11 1234567890" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="driver-license">Driver license:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ user.driverLicense }}"
+                    id="driver-license"
+                    name="driver-license"
+                    type="text"
+                    placeholder="1234567890" />
+            </div>
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <button class="button is-link" type="submit">Submit</button>
+            </div>
+            <div class="control">
+                <a href="/" class="button is-link is-light" type="button"
+                    >Cancel</a
+                >
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block footerScripts %}
+<script src="/public/js/user.create.js""></script>
+{% endblock %}
