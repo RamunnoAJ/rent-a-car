@@ -1,20 +1,20 @@
-const UserController = require("./controller/userController");
-const UserRepository = require("./repository/sqlite/userRepository");
-const UserService = require("./service/userService");
+const CarController = require("./controller/carController");
+const CarRepository = require("./repository/sqlite/carRepository");
+const CarService = require("./service/carService");
 
 /**
  * @param {import("express")} app
  * @param {import("rsdi").DIContainer} container
  */
 function init(app, container) {
-    /** @type {UserController} controller */
-    const controller = container.get("UserController");
+    /** @type {CarController} controller */
+    const controller = container.get("CarController");
     controller.configureRoutes(app);
 }
 
 module.exports = {
     init,
-    UserController,
-    UserRepository,
-    UserService
+    CarController,
+    CarRepository,
+    CarService
 };
