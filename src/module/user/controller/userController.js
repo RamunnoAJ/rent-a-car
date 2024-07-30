@@ -204,12 +204,11 @@ module.exports = class UserController extends AbstractController {
             req.session.messages = [
                 `User with ID:${savedUser.id} (${savedUser.name}) saved correctly`
             ];
-
-            res.redirect("/");
         } catch (e) {
             req.session.errors = ["Couldn't save the user"];
-            res.redirect("/");
         }
+
+        res.redirect("/");
     }
 
     /**
