@@ -1,5 +1,6 @@
 const AbstractController = require("../../abstractController");
 const { fromDataToEntity } = require("../mapper/userMapper");
+const UserCantDeleteHimselfError = require("./error/UserCantDeleteHimselfError");
 
 /**
  * @typedef {import('express').Request} Request
@@ -44,8 +45,13 @@ module.exports = class UserController extends AbstractController {
      * @param {Response} res
      */
     async index(req, res) {
+        const { errors, messages } = req.session;
         const users = await this.userService.getAll();
-        res.render("user/view/index.html", { data: { users } });
+        res.render("user/view/index.html", {
+            data: { users },
+            errors,
+            messages
+        });
     }
 
     /**
@@ -144,6 +150,11 @@ module.exports = class UserController extends AbstractController {
     async delete(req, res) {
         try {
             const { id } = req.params;
+            if (Number(id) === req.session.user.id) {
+                throw new UserCantDeleteHimselfError(
+                    "User can't delete himself"
+                );
+            }
             const user = await this.userService.getById(id);
             await this.userService.delete(user);
 
@@ -151,7 +162,10 @@ module.exports = class UserController extends AbstractController {
                 `User with ID: ${id} (${user.name}) deleted correctly`
             ];
         } catch (e) {
-            req.session.errors = [e.message, e.stack];
+            req.session.errors = [
+                e.message,
+                "Couldn't delete the user correctly"
+            ];
         }
 
         res.redirect("/");
