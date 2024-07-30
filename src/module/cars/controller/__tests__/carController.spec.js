@@ -157,4 +157,52 @@ describe("carController", () => {
         expect(redirectMock).toHaveBeenCalledTimes(1);
         expect(req.session.errors).not.toEqual([]);
     });
+
+    it("should render edit.html when calling editForm", async () => {
+        const renderMock = jest.fn();
+        const req = {
+            params: { id: 1 },
+            session: { errors: [], messages: [] }
+        };
+        const res = {
+            render: renderMock
+        };
+
+        const carMock = new Car(1);
+        serviceMock.getById.mockResolvedValue(carMock);
+
+        await controller.editForm(req, res);
+
+        expect(serviceMock.getById).toHaveBeenCalledWith(1);
+        expect(renderMock).toHaveBeenCalledTimes(1);
+        expect(renderMock).toHaveBeenCalledWith("cars/view/edit.html", {
+            data: { car: carMock },
+            errors: [],
+            messages: []
+        });
+        expect(req.session.messages).toEqual([]);
+        expect(req.session.errors).toEqual([]);
+    });
+
+    it("editForm should handles exceptions", async () => {
+        const req = {
+            params: { id: 1 },
+            session: { errors: [], messages: [] }
+        };
+        const res = {
+            render: jest.fn(),
+            redirect: jest.fn()
+        };
+
+        serviceMock.getById.mockImplementationOnce(() => {
+            throw new Error("Error");
+        });
+
+        await controller.editForm(req, res);
+
+        expect(serviceMock.getById).toHaveBeenCalledWith(1);
+        expect(res.render).not.toHaveBeenCalled();
+        expect(req.session.messages).toEqual([]);
+        expect(req.session.errors).toEqual([]);
+    });
 });
