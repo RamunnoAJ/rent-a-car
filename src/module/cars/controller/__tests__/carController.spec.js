@@ -93,4 +93,35 @@ describe("carController", () => {
         expect(redirectMock).toHaveBeenCalledTimes(1);
         expect(req.session.errors).not.toEqual([]);
     });
+
+    it("should call the service to delete with the id passed and redirect to '/cars'", async () => {
+        const FAKE_CAR = new Car(1);
+        serviceMock.getById.mockImplementationOnce(() =>
+            Promise.resolve(FAKE_CAR)
+        );
+        const redirectMock = jest.fn();
+
+        await controller.delete(
+            { params: { id: 1 }, session: { user: { id: 2 } } },
+            { redirect: redirectMock }
+        );
+
+        expect(serviceMock.delete).toHaveBeenCalledTimes(1);
+        expect(serviceMock.delete).toHaveBeenCalledWith(FAKE_CAR);
+        expect(redirectMock).toHaveBeenCalledTimes(1);
+        expect(redirectMock).toHaveBeenCalledWith("/cars");
+    });
+
+    it("should set the errors in the session and redirect to the cars index when there is an exception on the delete method", async () => {
+        serviceMock.delete.mockImplementationOnce(() => {
+            throw Error();
+        });
+
+        const redirectMock = jest.fn();
+        const req = { params: { id: 1 }, session: { errors: {} } };
+        await controller.delete(req, { redirect: redirectMock });
+
+        expect(redirectMock).toHaveBeenCalledTimes(1);
+        expect(req.session.errors).not.toEqual([]);
+    });
 });

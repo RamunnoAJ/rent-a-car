@@ -33,6 +33,11 @@ module.exports = class CarController extends AbstractController {
             this.ensureAuthenticated.bind(this),
             this.save.bind(this)
         );
+        app.delete(
+            `${BASE_ROUTE}/delete/:id`,
+            this.ensureAuthenticated.bind(this),
+            this.delete.bind(this)
+        );
     }
 
     /**
@@ -88,7 +93,7 @@ module.exports = class CarController extends AbstractController {
             const savedCar = await this.carService.save(car);
 
             req.session.messages = [
-                `Car with ID:${savedCar.id} (${savedCar.name}) saved correctly`
+                `Car with ID:${savedCar.id} saved correctly`
             ];
 
             res.redirect("/cars");
@@ -96,5 +101,26 @@ module.exports = class CarController extends AbstractController {
             req.session.errors = ["Couldn't save the car"];
             res.redirect("/cars");
         }
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async delete(req, res) {
+        try {
+            const { id } = req.params;
+            const car = await this.carService.getById(id);
+            await this.carService.delete(car);
+
+            req.session.messages = [`Car with ID: ${id} deleted correctly`];
+        } catch (e) {
+            req.session.errors = [
+                e.message,
+                "Couldn't delete the car correctly"
+            ];
+        }
+
+        res.redirect("/cars");
     }
 };
