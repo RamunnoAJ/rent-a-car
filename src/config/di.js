@@ -9,6 +9,11 @@ const {
     UserRepository,
     UserService
 } = require("../module/user/user");
+const {
+    CarController,
+    CarRepository,
+    CarService
+} = require("../module/cars/cars");
 
 function configureMainDatabaseAdapter() {
     return new Sqlite3Database(process.env.DB_PATH);
@@ -54,11 +59,25 @@ function addUserModuleDefinitions(container) {
     });
 }
 
+/**
+ * @param {DIContainer} container
+ */
+function addCarModuleDefinitions(container) {
+    container.addDefinitions({
+        CarController: object(CarController).construct(get("CarService")),
+        CarService: object(CarService).construct(get("CarRepository")),
+        CarRepository: object(CarRepository).construct(
+            get("MainDatabaseAdapter")
+        )
+    });
+}
+
 /** @returns {DIContainer} */
 function configureDI() {
     const container = new DIContainer();
     addCommonDefinitions(container);
     addUserModuleDefinitions(container);
+    addCarModuleDefinitions(container);
 
     return container;
 }
