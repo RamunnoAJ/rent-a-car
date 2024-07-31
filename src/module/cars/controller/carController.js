@@ -18,31 +18,16 @@ module.exports = class CarController extends AbstractController {
     configureRoutes(app) {
         const BASE_ROUTE = this.ROUTE_BASE;
 
-        app.get(
-            `${BASE_ROUTE}`,
-            this.ensureAuthenticated.bind(this),
-            this.index.bind(this)
-        );
-        app.get(
-            `${BASE_ROUTE}/create`,
-            this.ensureAuthenticated.bind(this),
-            this.createForm.bind(this)
-        );
-        app.post(
-            `${BASE_ROUTE}/save`,
-            this.ensureAuthenticated.bind(this),
-            this.save.bind(this)
-        );
-        app.delete(
-            `${BASE_ROUTE}/delete/:id`,
-            this.ensureAuthenticated.bind(this),
-            this.delete.bind(this)
-        );
-        app.get(
-            `${BASE_ROUTE}/edit/:id`,
-            this.ensureAuthenticated.bind(this),
-            this.editForm.bind(this)
-        );
+        /** @type {Array<{method: string, path: string, handler: Function}>} */
+        const secureRoutes = [
+            { method: "get", path: "", handler: this.index },
+            { method: "get", path: "create", handler: this.createForm },
+            { method: "post", path: "/save", handler: this.save },
+            { method: "delete", path: "/delete/:id", handler: this.delete },
+            { method: "get", path: "/edit/:id", handler: this.editForm }
+        ];
+
+        this.configureSecureRoutes(app, BASE_ROUTE, secureRoutes);
     }
 
     /**
@@ -60,18 +45,6 @@ module.exports = class CarController extends AbstractController {
 
         req.session.errors = [];
         req.session.messages = [];
-    }
-
-    /**
-     * @param {Request} req
-     * @param {Response} res
-     * @param {Function} next
-     */
-    ensureAuthenticated(req, res, next) {
-        if (req.session.user) {
-            return next();
-        }
-        res.redirect("/auth/login");
     }
 
     /**
