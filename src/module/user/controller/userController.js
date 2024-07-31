@@ -33,26 +33,15 @@ module.exports = class UserController extends AbstractController {
         app.post(`${BASE_ROUTE}/login`, this.login.bind(this));
         app.post(`${BASE_ROUTE}/logout`, this.logout.bind(this));
 
-        app.delete(
-            `${USER_ROUTE}/delete/:id`,
-            this.ensureAuthenticated.bind(this),
-            this.delete.bind(this)
-        );
-        app.post(
-            `${USER_ROUTE}/save`,
-            this.ensureAuthenticated.bind(this),
-            this.save.bind(this)
-        );
-        app.get(
-            `${USER_ROUTE}/edit/:id`,
-            this.ensureAuthenticated.bind(this),
-            this.editForm.bind(this)
-        );
-        app.get(
-            `${USER_ROUTE}/create`,
-            this.ensureAuthenticated.bind(this),
-            this.createForm.bind(this)
-        );
+        /** @type {Array<{method: string, path: string, handler: Function}>} */
+        const secureRoutes = [
+            { method: "delete", path: "/delete/:id", handler: this.delete },
+            { method: "post", path: "/save", handler: this.save },
+            { method: "get", path: "/edit/:id", handler: this.editForm },
+            { method: "get", path: "/create", handler: this.createForm }
+        ];
+
+        this.configureSecureRoutes(app, USER_ROUTE, secureRoutes);
     }
 
     /**
@@ -70,18 +59,6 @@ module.exports = class UserController extends AbstractController {
 
         req.session.errors = [];
         req.session.messages = [];
-    }
-
-    /**
-     * @param {Request} req
-     * @param {Response} res
-     * @param {Function} next
-     */
-    ensureAuthenticated(req, res, next) {
-        if (req.session.user) {
-            return next();
-        }
-        res.redirect("/auth/login");
     }
 
     /**
