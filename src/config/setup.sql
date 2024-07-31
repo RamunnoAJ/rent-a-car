@@ -28,3 +28,19 @@ CREATE TABLE cars (
     created_at DATE DEFAULT (datetime('now', 'localtime')) NOT NULL,
     updated_at DATE DEFAULT (datetime('now', 'localtime')) NOT NULL
 );
+
+DROP TABLE IF EXISTS reservations;
+CREATE TABLE reservations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    from_date DATE NOT NULL,
+    to_date DATE NOT NULL,
+    days INTEGER NOT NULL,
+    baby_chair BOOLEAN NOT NULL,
+    snow_chain BOOLEAN,
+    payment_method TEXT NOT NULL,
+    total_price INTEGER NOT NULL,
+    fk_car_id INTEGER NOT NULL REFERENCES cars(id),
+    fk_user_id INTEGER NOT NULL REFERENCES users(id),
+    created_at DATE DEFAULT (datetime('now', 'localtime')) NOT NULL,
+    updated_at DATE DEFAULT (datetime('now', 'localtime')) NOT NULL
+);
