@@ -13,8 +13,10 @@ function fromDbToEntity({
     snow_chain,
     payment_method,
     total_price,
-    fk_car_id,
-    fk_user_id
+    created_at,
+    updated_at,
+    car,
+    user
 }) {
     return new Reservation(
         id,
@@ -25,8 +27,10 @@ function fromDbToEntity({
         snow_chain,
         payment_method,
         total_price,
-        fk_car_id,
-        fk_user_id
+        created_at,
+        updated_at,
+        car,
+        user
     );
 }
 

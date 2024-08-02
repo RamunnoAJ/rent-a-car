@@ -8,10 +8,10 @@ module.exports = class Reservation {
      * @param {boolean} snowChain
      * @param {string} paymentMethod
      * @param {number} totalPrice
-     * @param {number} carId
-     * @param {number} userId
      * @param {string} createdAt
      * @param {string} updatedAt
+     * @param {import("../../cars/entity/Car")} car
+     * @param {import("../../user/entity/User")} user
      */
     constructor(
         id,
@@ -22,10 +22,10 @@ module.exports = class Reservation {
         snowChain,
         paymentMethod,
         totalPrice,
-        carId,
-        userId,
         createdAt,
-        updatedAt
+        updatedAt,
+        car,
+        user
     ) {
         this.id = id;
         this.fromDate = fromDate;
@@ -35,9 +35,9 @@ module.exports = class Reservation {
         this.snowChain = snowChain;
         this.paymentMethod = paymentMethod;
         this.totalPrice = totalPrice;
-        this.carId = carId;
-        this.userId = userId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.car = car;
+        this.user = user;
     }
 };

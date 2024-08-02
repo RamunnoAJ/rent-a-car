@@ -44,8 +44,8 @@ module.exports = class ReservationRepository extends (
                 reservation.snowChain,
                 reservation.paymentMethod,
                 reservation.totalPrice,
-                reservation.carId,
-                reservation.userId,
+                reservation.car.id,
+                reservation.user.id,
                 reservation.id
             ];
 
@@ -73,8 +73,8 @@ module.exports = class ReservationRepository extends (
                 reservation.snowChain,
                 reservation.paymentMethod,
                 reservation.totalPrice,
-                reservation.carId,
-                reservation.userId
+                reservation.car.id,
+                reservation.user.id
             );
 
             id = result.lastInsertRowid;
@@ -90,22 +90,40 @@ module.exports = class ReservationRepository extends (
     getById(id) {
         const reservation = this.databaseAdapter
             .prepare(
-                `
-            SELECT
-                id,
-                from_date,
-                to_date,
-                days,
-                baby_chair,
-                snow_chain,
-                payment_method,
-                total_price,
-                fk_car_id,
-                fk_user_id,
-                created_at,
-                updated_at
-            FROM reservations WHERE id = ?
-        `
+                `SELECT
+                    r.id,
+                    r.from_date,
+                    r.to_date,
+                    r.days,
+                    r.baby_chair,
+                    r.snow_chain,
+                    r.payment_method,
+                    r.total_price,
+                    r.created_at,
+                    r.updated_at,
+                    c.id as car_id,
+                    c.brand,
+                    c.model,
+                    c.year,
+                    c.kms,
+                    c.color,
+                    c.air_conditioning,
+                    c.seats,
+                    c.transmission,
+                    c.price,
+                    u.id as user_id,
+                    u.email,
+                    u.token,
+                    u.phone,
+                    u.name,
+                    u.nationality,
+                    u.address,
+                    u.driver_license,
+                    u.role
+                FROM reservations r
+                INNER JOIN cars c ON r.fk_car_id = c.id
+                INNER JOIN users u ON r.fk_user_id = u.id
+                WHERE r.id = ?`
             )
             .get(id);
 
@@ -124,19 +142,38 @@ module.exports = class ReservationRepository extends (
             .prepare(
                 `
                 SELECT
-                    id,
-                    from_date,
-                    to_date,
-                    days,
-                    baby_chair,
-                    snow_chain,
-                    payment_method,
-                    total_price,
-                    fk_car_id,
-                    fk_user_id,
-                    created_at,
-                    updated_at
-                FROM reservations
+                    r.id,
+                    r.from_date,
+                    r.to_date,
+                    r.days,
+                    r.baby_chair,
+                    r.snow_chain,
+                    r.payment_method,
+                    r.total_price,
+                    r.created_at,
+                    r.updated_at,
+                    c.id as car_id,
+                    c.brand,
+                    c.model,
+                    c.year,
+                    c.kms,
+                    c.color,
+                    c.air_conditioning,
+                    c.seats,
+                    c.transmission,
+                    c.price,
+                    u.id as user_id,
+                    u.email,
+                    u.token,
+                    u.phone,
+                    u.name,
+                    u.nationality,
+                    u.address,
+                    u.driver_license,
+                    u.role
+                FROM reservations r
+                INNER JOIN cars c ON r.fk_car_id = c.id
+                INNER JOIN users u ON r.fk_user_id = u.id
             `
             )
             .all();
