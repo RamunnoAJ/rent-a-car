@@ -14,6 +14,11 @@ const {
     CarRepository,
     CarService
 } = require("../module/cars/cars");
+const {
+    ReservationController,
+    ReservationRepository,
+    ReservationService
+} = require("../module/reservation/reservation");
 
 function configureMainDatabaseAdapter() {
     return new Sqlite3Database(
@@ -74,12 +79,32 @@ function addCarModuleDefinitions(container) {
     });
 }
 
+/**
+ * @param {DIContainer} container
+ */
+function addReservationModuleDefinitions(container) {
+    container.addDefinitions({
+        ReservationController: object(ReservationController).construct(
+            get("ReservationService"),
+            get("CarService"),
+            get("UserService")
+        ),
+        ReservationService: object(ReservationService).construct(
+            get("ReservationRepository")
+        ),
+        ReservationRepository: object(ReservationRepository).construct(
+            get("MainDatabaseAdapter")
+        )
+    });
+}
+
 /** @returns {DIContainer} */
 function configureDI() {
     const container = new DIContainer();
     addCommonDefinitions(container);
     addUserModuleDefinitions(container);
     addCarModuleDefinitions(container);
+    addReservationModuleDefinitions(container);
 
     return container;
 }
