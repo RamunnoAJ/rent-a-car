@@ -37,6 +37,44 @@ describe("carController", () => {
         });
     });
 
+    it("index should render the view.html with the correct car", async () => {
+        const renderMock = jest.fn();
+
+        await controller.view(
+            { session: { errors: [], messages: [] }, params: { id: 1 } },
+            { render: renderMock }
+        );
+
+        expect(renderMock).toHaveBeenCalledTimes(1);
+        expect(renderMock).toHaveBeenCalledWith("cars/view/view.html", {
+            data: { car: undefined },
+            errors: [],
+            messages: []
+        });
+    });
+
+    it("view should handles exceptions", async () => {
+        const req = {
+            params: { id: 1 },
+            session: { errors: [], messages: [] }
+        };
+        const res = {
+            render: jest.fn(),
+            redirect: jest.fn()
+        };
+
+        serviceMock.getById.mockImplementationOnce(() => {
+            throw new Error("Error");
+        });
+
+        await controller.view(req, res);
+
+        expect(serviceMock.getById).toHaveBeenCalledWith(1);
+        expect(res.render).not.toHaveBeenCalled();
+        expect(req.session.messages).toEqual([]);
+        expect(req.session.errors).toEqual([]);
+    });
+
     it("should render create.html when calling createForm", async () => {
         const req = {
             session: { errors: [], messages: [] }
