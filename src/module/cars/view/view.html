@@ -1,0 +1,65 @@
+{% extends "view/layout/base.html" %} {% block body %} {% set car = data.car %}
+{% set car = data.car %}
+<section class="container is-max-desktop">
+    <h1 class="title is-3">View car {{ car.id }}</h1>
+
+    <form action="/cars/save" method="POST" autocomplete="off">
+        <div class="columns">
+            <div class="field column">
+                <label class="label" for="brand">Brand:</label>
+                <div class="control">{{ car.brand }}</div>
+            </div>
+            <div class="field column">
+                <label class="label" for="model">Model:</label>
+                <div class="control">{{ car.model }}</div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="field column">
+                <label class="label" for="year">Year:</label>
+                <div class="control">{{ car.year }}</div>
+            </div>
+            <div class="field column">
+                <label class="label" for="kms">Kms:</label>
+                <div class="control">{{ car.kms }}</div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="field column">
+                <label class="label" for="color">Color:</label>
+                <div class="control">{{ car.color }}</div>
+            </div>
+            <div class="field column">
+                <label class="label" for="air-conditioning"
+                    >Air conditioning:</label
+                >
+                <div class="control">
+                    {% if car.airConditioning === 0 %} Yes {% else %} No {%
+                    endif %}
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="field column">
+                <label class="label" for="seats">Seats:</label>
+                <div class="control">{{ car.seats }}</div>
+            </div>
+            <div class="field column">
+                <label class="label" for="seats">Transmission:</label>
+                <div class="control">{{ car.transmission }}</div>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="price">Price:</label>
+            <div class="control">${{ car.price.toFixed(2) }}</div>
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <a href="/cars" class="button is-link is-light" type="button"
+                    >Go back</a
+                >
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}

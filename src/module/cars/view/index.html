@@ -38,8 +38,13 @@
             <td>${{ car.price.toFixed(2) }}</td>
             <td>
                 <a
-                    href="/cars/edit/{{ car.id }}"
+                    href="/cars/view/{{ car.id }}"
                     class="button is-info is-dark mr-2"
+                    >View</a
+                >
+                <a
+                    href="/cars/edit/{{ car.id }}"
+                    class="button is-link is-dark mr-2"
                     >Edit</a
                 >
                 <button
