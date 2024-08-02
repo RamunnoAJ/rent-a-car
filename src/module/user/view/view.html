@@ -1,0 +1,48 @@
+{% extends "view/layout/base.html" %} {% block body %} {% set user = data.user
+%}
+<section class="container is-max-desktop">
+    <h5 class="subtitle is-5">View user {{ user.id }}</h5>
+
+    <div>
+        <div class="columns">
+            <div class="field column">
+                <label class="label" for="name">Name:</label>
+                <div class="control">{{ user.name }}</div>
+            </div>
+            <div class="field column">
+                <label class="label" for="email">Email:</label>
+                <div class="control">{{ user.email }}</div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="field column">
+                <label class="label" for="phone">Phone:</label>
+                <div class="control">{{ user.phone }}</div>
+            </div>
+            <div class="field column">
+                <label class="label" for="phone">Country:</label>
+                <div class="control">{{ user.nationality }}</div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="field column">
+                <label class="label" for="address">Address:</label>
+                <div class="control">{{ user.address }}</div>
+            </div>
+            <div class="field column">
+                <label class="label" for="driver-license"
+                    >Driver license:</label
+                >
+                <div class="control">{{ user.driverLicense }}</div>
+            </div>
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <a href="/" class="button is-link is-light" type="button"
+                    >Go back</a
+                >
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

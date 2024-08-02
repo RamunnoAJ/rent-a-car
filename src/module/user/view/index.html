@@ -46,7 +46,8 @@
             <td>{{ user.address }}</td>
             <td>{{ user.driverLicense }}</td>
             <td>
-                <a href="/users/edit/{{ user.id }}" class="button is-info is-dark mr-2">Edit</a>
+                <a href="/users/view/{{ user.id }}" class="button is-info is-dark mr-2">View</a>
+                <a href="/users/edit/{{ user.id }}" class="button is-link is-dark mr-2">Edit</a>
                 <button id="delete-{{ user.id }}" class="btn-delete button is-danger is-dark">Delete</button>
             </td>
         </tr>
