@@ -27,7 +27,7 @@ module.exports = class ReservationController extends AbstractController {
         /** @type {Array<{method: string, path: string, handler: Function}>} */
         const secureRoutes = [
             { method: "get", path: "", handler: this.index },
-            { method: "get", path: "create", handler: this.createForm },
+            { method: "get", path: "/create", handler: this.createForm },
             { method: "post", path: "/save", handler: this.save },
             { method: "delete", path: "/delete/:id", handler: this.delete },
             { method: "get", path: "/edit/:id", handler: this.editForm }
@@ -43,7 +43,7 @@ module.exports = class ReservationController extends AbstractController {
     async index(req, res) {
         const { errors, messages } = req.session;
         const reservations = await this.reservationService.getAll();
-        res.render("reservations/view/index.html", {
+        res.render("reservation/view/index.html", {
             data: { reservations },
             errors,
             messages
@@ -58,7 +58,7 @@ module.exports = class ReservationController extends AbstractController {
      * @param {Response} res
      */
     async createForm(req, res) {
-        res.render("reservations/view/create.html");
+        res.render("reservation/view/create.html");
 
         req.session.messages = [];
         req.session.errors = [];
@@ -74,7 +74,7 @@ module.exports = class ReservationController extends AbstractController {
             const reservation = await this.reservationService.getById(id);
 
             const { errors, messages } = req.session;
-            res.render("reservations/view/edit.html", {
+            res.render("reservation/view/edit.html", {
                 data: { reservation },
                 errors,
                 messages
