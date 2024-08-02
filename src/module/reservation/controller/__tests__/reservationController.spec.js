@@ -30,14 +30,11 @@ describe("reservationController", () => {
         );
 
         expect(renderMock).toHaveBeenCalledTimes(1);
-        expect(renderMock).toHaveBeenCalledWith(
-            "reservations/view/index.html",
-            {
-                data: { reservations: undefined },
-                errors: [],
-                messages: []
-            }
-        );
+        expect(renderMock).toHaveBeenCalledWith("reservation/view/index.html", {
+            data: { reservations: undefined },
+            errors: [],
+            messages: []
+        });
     });
 
     it("should render create.html when calling createForm", async () => {
@@ -52,9 +49,7 @@ describe("reservationController", () => {
         await controller.createForm(req, res);
 
         expect(res.render).toHaveBeenCalledTimes(1);
-        expect(res.render).toHaveBeenCalledWith(
-            "reservations/view/create.html"
-        );
+        expect(res.render).toHaveBeenCalledWith("reservation/view/create.html");
         expect(req.session.messages).toEqual([]);
         expect(req.session.errors).toEqual([]);
     });
@@ -136,7 +131,7 @@ describe("reservationController", () => {
 
         expect(serviceMock.getById).toHaveBeenCalledWith(1);
         expect(renderMock).toHaveBeenCalledTimes(1);
-        expect(renderMock).toHaveBeenCalledWith("reservations/view/edit.html", {
+        expect(renderMock).toHaveBeenCalledWith("reservation/view/edit.html", {
             data: { reservation: reservationMock },
             errors: [],
             messages: []

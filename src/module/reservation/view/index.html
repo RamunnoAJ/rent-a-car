@@ -1,0 +1,57 @@
+{% extends "view/layout/base.html" %} {% block body %}
+<a href="/reservations/create" class="button is-primary is-dark my-2"
+    >Create a new reservation</a
+>
+{% for message in messages %}
+<div class="notification is-success">{{message}}</div>
+{% endfor %} {% for error in errors %}
+<div class="notification is-danger">{{error}}</div>
+{% endfor %}
+<table class="table is-fullwidth">
+    <thead>
+        <tr>
+            <td>#</td>
+            <td>From</td>
+            <td>To</td>
+            <td>Days</td>
+            <td>Baby chair</td>
+            <td>Snow chain</td>
+            <td>Payment method</td>
+            <td>Total price</td>
+            <td>Car</td>
+            <td>User</td>
+            <td>Actions</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reservation in data.reservations %}
+        <tr>
+            <td>{{ reservation.id }}</td>
+            <td>{{ reservation.fromDate }}</td>
+            <td>{{ reservation.toDate }}</td>
+            <td>{{ reservation.days }}</td>
+            <td>{{ reservation.babyChair }}</td>
+            <td>{{ reservation.snowChain }}</td>
+            <td>{{ reservation.paymentMethod }}</td>
+            <td>{{ reservation.totalPrice }}</td>
+            <td><a href="/cars/view/{{ reservation.car.id }}">Link</a></td>
+            <td><a href="/users/view/{{ reservation.user.id }}">Link</a></td>
+            <td>
+                <a
+                    href="/reservations/edit/{{ user.id }}"
+                    class="button is-info is-dark mr-2"
+                    >Edit</a
+                >
+                <button
+                    id="delete-{{ reservation.id }}"
+                    class="btn-delete button is-danger is-dark">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} {% block footerScripts %}
+<script src="/public/js/user.index.js"></script>
+{% endblock %}
