@@ -38,6 +38,7 @@ module.exports = class UserController extends AbstractController {
             { method: "delete", path: "/delete/:id", handler: this.delete },
             { method: "post", path: "/save", handler: this.save },
             { method: "get", path: "/edit/:id", handler: this.editForm },
+            { method: "get", path: "/view/:id", handler: this.view },
             { method: "get", path: "/create", handler: this.createForm }
         ];
 
@@ -56,6 +57,28 @@ module.exports = class UserController extends AbstractController {
             errors,
             messages
         });
+
+        req.session.errors = [];
+        req.session.messages = [];
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async view(req, res) {
+        try {
+            const { id } = req.params;
+            const { errors, messages } = req.session;
+            const user = await this.userService.getById(id);
+            res.render("user/view/view.html", {
+                data: { user },
+                errors,
+                messages
+            });
+        } catch (e) {
+            res.redirect("/");
+        }
 
         req.session.errors = [];
         req.session.messages = [];
