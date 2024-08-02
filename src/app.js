@@ -5,6 +5,9 @@ const nunjucks = require("nunjucks");
 const configureDI = require("./config/di");
 const { init: initUserModule } = require("./module/user/user");
 const { init: initCarModule } = require("./module/cars/cars");
+const {
+    init: initReservationModule
+} = require("./module/reservation/reservation");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,6 +25,7 @@ app.use(container.get("Session"));
 
 initUserModule(app, container);
 initCarModule(app, container);
+initReservationModule(app, container);
 
 app.listen(port, () =>
     console.log(`Server listening on http://localhost:${port}`)
