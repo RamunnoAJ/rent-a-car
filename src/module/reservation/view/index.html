@@ -30,15 +30,15 @@
             <td>{{ reservation.fromDate }}</td>
             <td>{{ reservation.toDate }}</td>
             <td>{{ reservation.days }}</td>
-            <td>{{ reservation.babyChair }}</td>
-            <td>{{ reservation.snowChain }}</td>
+            <td>{% if reservation.babyChair === 1 %} Yes {% else %} No {% endif %}</td>
+            <td>{% if reservation.snowChain === 1 %} Yes {% else %} No {% endif %}</td>
             <td>{{ reservation.paymentMethod.charAt(0).toUpperCase() }}{{ reservation.paymentMethod.slice(1) }}</td>
             <td>${{ reservation.totalPrice.toFixed(2) }}</td>
-            <td><a href="/cars/view/{{ reservation.car.id }}">Link</a></td>
-            <td><a href="/users/view/{{ reservation.user.id }}">Link</a></td>
+            <td><a href="/cars/view/{{ reservation.car }}">Link</a></td>
+            <td><a href="/users/view/{{ reservation.user }}">Link</a></td>
             <td>
                 <a
-                    href="/reservations/edit/{{ user.id }}"
+                    href="/reservations/edit/{{ reservation.id }}"
                     class="button is-info is-dark mr-2"
                     >Edit</a
                 >
