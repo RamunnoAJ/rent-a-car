@@ -21,7 +21,7 @@ module.exports = class CarController extends AbstractController {
         /** @type {Array<{method: string, path: string, handler: Function}>} */
         const secureRoutes = [
             { method: "get", path: "", handler: this.index },
-            { method: "get", path: "create", handler: this.createForm },
+            { method: "get", path: "/create", handler: this.createForm },
             { method: "post", path: "/save", handler: this.save },
             { method: "delete", path: "/delete/:id", handler: this.delete },
             { method: "get", path: "/edit/:id", handler: this.editForm },
