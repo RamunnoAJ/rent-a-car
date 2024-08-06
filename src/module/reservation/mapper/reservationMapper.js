@@ -38,8 +38,32 @@ function fromDbToEntity({
  * @param {Object} formData
  * @returns {Reservation}
  */
-function fromDataToEntity({}) {
-    return new Reservation();
+function fromDataToEntity({
+    id,
+    "from-date": fromDate,
+    "to-date": toDate,
+    days,
+    "baby-chair": babyChair,
+    "snow-chain": snowChain,
+    "payment-method": paymentMethod,
+    "total-price": totalPrice,
+    car,
+    user
+}) {
+    return new Reservation(
+        id,
+        fromDate,
+        toDate,
+        days,
+        babyChair,
+        snowChain,
+        paymentMethod,
+        totalPrice,
+        null,
+        null,
+        car,
+        user
+    );
 }
 
 module.exports = {

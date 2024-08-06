@@ -32,8 +32,8 @@
             <td>{{ reservation.days }}</td>
             <td>{{ reservation.babyChair }}</td>
             <td>{{ reservation.snowChain }}</td>
-            <td>{{ reservation.paymentMethod }}</td>
-            <td>{{ reservation.totalPrice }}</td>
+            <td>{{ reservation.paymentMethod.charAt(0).toUpperCase() }}{{ reservation.paymentMethod.slice(1) }}</td>
+            <td>${{ reservation.totalPrice.toFixed(2) }}</td>
             <td><a href="/cars/view/{{ reservation.car.id }}">Link</a></td>
             <td><a href="/users/view/{{ reservation.user.id }}">Link</a></td>
             <td>
