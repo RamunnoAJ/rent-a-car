@@ -40,4 +40,18 @@ module.exports = class Reservation {
         this.car = car;
         this.user = user;
     }
+
+    getTotalPrice() {
+        let price = this.days * this.car.price;
+
+        if (this.babyChair) {
+            price += 10000;
+        }
+
+        if (this.snowChain) {
+            price += 30000;
+        }
+
+        this.totalPrice = price;
+    }
 };

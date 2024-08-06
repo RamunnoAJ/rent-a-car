@@ -10,7 +10,19 @@ describe("reservationController", () => {
         delete: jest.fn()
     };
 
-    const controller = new ReservationController(serviceMock);
+    const carServiceMock = {
+        getAll: jest.fn()
+    };
+
+    const userServiceMock = {
+        getAll: jest.fn()
+    };
+
+    const controller = new ReservationController(
+        serviceMock,
+        carServiceMock,
+        userServiceMock
+    );
 
     it("Configure the routes correctly", () => {
         const app = {
@@ -49,9 +61,29 @@ describe("reservationController", () => {
         await controller.createForm(req, res);
 
         expect(res.render).toHaveBeenCalledTimes(1);
-        expect(res.render).toHaveBeenCalledWith("reservation/view/create.html");
+        expect(res.render).toHaveBeenCalledWith(
+            "reservation/view/create.html",
+            { data: { cars: undefined, users: undefined } }
+        );
         expect(req.session.messages).toEqual([]);
         expect(req.session.errors).toEqual([]);
+    });
+
+    it("should redirect to '/reservations' if there is an error trying to render createForm", async () => {
+        carServiceMock.getAll.mockImplementationOnce(() => {
+            throw Error();
+        });
+
+        const redirectMock = jest.fn();
+        const req = { session: { errors: {} } };
+        const res = {
+            render: jest.fn(),
+            redirect: redirectMock
+        };
+        await controller.createForm(req, res);
+
+        expect(redirectMock).toHaveBeenCalledTimes(1);
+        expect(req.session.errors).not.toEqual([]);
     });
 
     it("should save a reservation when there is no id", async () => {

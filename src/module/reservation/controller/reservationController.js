@@ -58,10 +58,22 @@ module.exports = class ReservationController extends AbstractController {
      * @param {Response} res
      */
     async createForm(req, res) {
-        res.render("reservation/view/create.html");
+        try {
+            const cars = await this.carService.getAll();
+            const users = await this.userService.getAll();
 
-        req.session.messages = [];
-        req.session.errors = [];
+            res.render("reservation/view/create.html", {
+                data: { cars, users }
+            });
+            req.session.messages = [];
+            req.session.errors = [];
+        } catch (e) {
+            res.redirect("/reservations");
+
+            req.session.errors = [
+                "There was an error trying to render the create view"
+            ];
+        }
     }
 
     /**
@@ -96,7 +108,12 @@ module.exports = class ReservationController extends AbstractController {
         req.session.errors = [];
 
         try {
-            const reservation = fromDataToEntity(req.body);
+            const user = await this.userService.getById(req.body.user);
+            const car = await this.carService.getById(req.body.car);
+            const reservation = fromDataToEntity({ ...req.body, user, car });
+            console.log(reservation);
+            reservation.getTotalPrice();
+
             const savedReservation =
                 await this.reservationService.save(reservation);
 
@@ -104,6 +121,7 @@ module.exports = class ReservationController extends AbstractController {
                 `Reservation with ID:${savedReservation.id} saved correctly`
             ];
         } catch (e) {
+            console.log(e);
             req.session.errors = ["Couldn't save the reservation"];
         }
 
