@@ -202,7 +202,11 @@ describe("reservationController", () => {
         expect(serviceMock.getById).toHaveBeenCalledWith(1);
         expect(renderMock).toHaveBeenCalledTimes(1);
         expect(renderMock).toHaveBeenCalledWith("reservation/view/edit.html", {
-            data: { reservation: reservationMock },
+            data: {
+                reservation: reservationMock,
+                cars: undefined,
+                users: undefined
+            },
             errors: [],
             messages: []
         });

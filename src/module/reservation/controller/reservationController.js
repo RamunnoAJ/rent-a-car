@@ -84,10 +84,12 @@ module.exports = class ReservationController extends AbstractController {
         try {
             const { id } = req.params;
             const reservation = await this.reservationService.getById(id);
+            const cars = await this.carService.getAll();
+            const users = await this.userService.getAll();
 
             const { errors, messages } = req.session;
             res.render("reservation/view/edit.html", {
-                data: { reservation },
+                data: { reservation, cars, users },
                 errors,
                 messages
             });
@@ -120,7 +122,6 @@ module.exports = class ReservationController extends AbstractController {
                 `Reservation with ID:${savedReservation.id} saved correctly`
             ];
         } catch (e) {
-            console.log(e);
             req.session.errors = ["Couldn't save the reservation"];
         }
 
