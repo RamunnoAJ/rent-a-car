@@ -1,0 +1,155 @@
+{% extends "view/layout/base.html" %} {% block body %} {% set reservation = data.reservation %} {% set users = data.users %} {% set cars = data.cars %}
+<section class="container is-max-desktop">
+    <h1 class="title is-3">Edit reservation {{ reservation.id }}</h1>
+
+    <form action="/cars/save" method="POST" autocomplete="off">
+        <div class="field is-hidden">
+            <div class="control">
+                <input
+                    class="input"
+                    value="{{ reservation.id }}"
+                    id="id"
+                    name="id"
+                    type="text" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="from-date">From date:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    id="from-date"
+                    name="from-date"
+                    value="{{ reservation.fromDate }}"
+                    type="date" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="to-date">To date:</label>
+            <div class="control">
+                <input
+                    class="input"
+                    id="to-date"
+                    name="to-date"
+                    value="{{ reservation.toDate }}"
+                    type="date" />
+            </div>
+        </div>
+        <div class="field is-hidden">
+            <input
+                class="input"
+                id="days"
+                name="days"
+                value="{{ reservation.days }}"
+                type="number" />
+        </div>
+        <div class="field has-addons">
+            <div class="control has-icons-left is-expanded">
+                <div class="select is-full-width">
+                    <select id="baby-chair" name="baby-chair">
+                        <option disabled selected>Baby chair</option>
+                        <option
+                            value="0"
+                            {% if reservation.babyChair == 0 %} selected {% endif %}>
+                            No
+                        </option>
+                        <option
+                            value="1"
+                            {% if reservation.babyChair == 1 %} selected {% endif %}>
+                            Yes
+                        </option>
+                    </select>
+                    <p class="help mt-2">
+                        Do you want a baby chair for your reservation? It will
+                        be an extra $10000
+                    </p>
+                </div>
+                <span class="icon is-left"> </span>
+            </div>
+        </div>
+        <div class="field has-addons mt-6">
+            <div class="control has-icons-left is-expanded">
+                <div class="select is-full-width">
+                    <select id="snow-chain" name="snow-chain">
+                        <option disabled selected>Snow chain</option>
+                        <option
+                            value="0"
+                            {% if reservation.snowChain == 0 %} selected {% endif %}>
+                            No
+                        </option>
+                        <option
+                            value="1"
+                            {% if reservation.snowChain == 1 %} selected {% endif %}>
+                            Yes
+                        </option>
+                    </select>
+                    <p class="help mt-2">
+                        Do you want a snow chain for your reservation? It will
+                        be an extra $30000
+                    </p>
+                </div>
+                <span class="icon is-left"> </span>
+            </div>
+        </div>
+        <div class="field has-addons mt-6">
+            <div class="control has-icons-left is-expanded">
+                <div class="select is-full-width">
+                    <select id="payment-method" name="payment-method">
+                        <option disabled>Payment method</option>
+                        <option value="debit" {% if reservation.paymentMethod == "debit" %} selected {% endif %}> Debit card </option>
+                        <option value="credit" {% if reservation.paymentMethod == "credit" %} selected {% endif %}> Credit card </option>
+                        <option value="cash" {% if reservation.paymentMethod == "cash" %} selected {% endif %}> Cash </option>
+                    </select>
+                    <p class="help mt-2">How will you pay?</p>
+                </div>
+                <span class="icon is-left"> </span>
+            </div>
+        </div>
+        <div class="field has-addons mt-6">
+            <div class="control has-icons-left is-expanded">
+                <div class="select is-full-width">
+                    <select id="car" name="car">
+                        <option disabled selected>Car</option>
+                        {% for car in cars %}
+                        <option {% if reservation.car == car.id %} selected {% endif %} value="{{ car.id }}">
+                            {{ car.brand }} - {{ car.model }} - year: {{ car.year }} - kms: {{ car.kms }} - {% if car.airConditioning === 1 %} AC {% else %} No AC {% endif %} - {{ car.transmission }} - {{ car.color }} - Seats: {{ car.seats }} - ${{ car.price }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <p class="help mt-2">Select a car.</p>
+                </div>
+                <span class="icon is-left"> </span>
+            </div>
+        </div>
+        <div class="field has-addons mt-6">
+            <div class="control has-icons-left is-expanded">
+                <div class="select is-full-width">
+                    <select id="user" name="user">
+                        <option disabled selected>User</option>
+                        {% for user in users %}
+                        <option {% if reservation.user == user.id %} selected {% endif %} value="{{ user.id }}">
+                            {{ user.name }} - {{ user.email }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <p class="help mt-2">Select a user.</p>
+                </div>
+                <span class="icon is-left"> </span>
+            </div>
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <button class="button is-link" type="submit">Submit</button>
+            </div>
+            <div class="control">
+                <a href="/cars" class="button is-link is-light" type="button"
+                    >Cancel</a
+                >
+            </div>
+        </div>
+    </form>
+</section>
+
+{% endblock %} {% block footerScripts %}
+<script src="/public/js/reservation.edit.js"></script>
+{% endblock %}
