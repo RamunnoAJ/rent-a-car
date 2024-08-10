@@ -1,6 +1,7 @@
 const { default: DIContainer, factory, object, get } = require("rsdi");
 const Sqlite3Database = require("better-sqlite3");
 const bcrypt = require("bcrypt");
+const fs = require("fs");
 
 const session = require("express-session");
 
@@ -21,9 +22,14 @@ const {
 } = require("../module/reservation/reservation");
 
 function configureMainDatabaseAdapter() {
-    return new Sqlite3Database(
+    const db = new Sqlite3Database(
         process.env.NODE_ENV === "test" ? ":memory:" : process.env.DB_PATH
     );
+
+    const migration = fs.readFileSync(process.env.DB_SETUP_PATH, "utf-8");
+    db.exec(migration);
+
+    return db;
 }
 
 function configureSession() {

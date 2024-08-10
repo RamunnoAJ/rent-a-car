@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS users;
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT NOT NULL,
     token TEXT NOT NULL,
@@ -13,8 +12,7 @@ CREATE TABLE users (
     updated_at DATE DEFAULT (datetime('now', 'localtime')) NOT NULL
 );
 
-DROP TABLE IF EXISTS cars;
-CREATE TABLE cars (
+CREATE TABLE IF NOT EXISTS cars (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     brand TEXT NOT NULL,
     model TEXT NOT NULL,
@@ -29,8 +27,7 @@ CREATE TABLE cars (
     updated_at DATE DEFAULT (datetime('now', 'localtime')) NOT NULL
 );
 
-DROP TABLE IF EXISTS reservations;
-CREATE TABLE reservations (
+CREATE TABLE IF NOT EXISTS reservations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     from_date DATE NOT NULL,
     to_date DATE NOT NULL,
