@@ -235,4 +235,46 @@ describe("reservationController", () => {
         expect(req.session.messages).toEqual([]);
         expect(req.session.errors).toEqual([]);
     });
+
+    it("index should render the view.html with the correct reservation", async () => {
+        const renderMock = jest.fn();
+
+        await controller.view(
+            { session: { errors: [], messages: [] }, params: { id: 1 } },
+            { render: renderMock }
+        );
+
+        expect(renderMock).toHaveBeenCalledTimes(1);
+        expect(renderMock).toHaveBeenCalledWith("reservation/view/view.html", {
+            data: {
+                reservation: new Reservation(1),
+                user: { id: 1, name: "User 1" },
+                car: { id: 1, model: "Car 1", price: 1000 }
+            },
+            errors: [],
+            messages: []
+        });
+    });
+
+    it("view should handles exceptions", async () => {
+        const req = {
+            params: { id: 1 },
+            session: { errors: [], messages: [] }
+        };
+        const res = {
+            render: jest.fn(),
+            redirect: jest.fn()
+        };
+
+        serviceMock.getById.mockImplementationOnce(() => {
+            throw new Error("Error");
+        });
+
+        await controller.view(req, res);
+
+        expect(serviceMock.getById).toHaveBeenCalledWith(1);
+        expect(res.render).not.toHaveBeenCalled();
+        expect(req.session.messages).toEqual([]);
+        expect(req.session.errors).toEqual([]);
+    });
 });

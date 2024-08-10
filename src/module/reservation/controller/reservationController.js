@@ -30,7 +30,8 @@ module.exports = class ReservationController extends AbstractController {
             { method: "get", path: "/create", handler: this.createForm },
             { method: "post", path: "/save", handler: this.save },
             { method: "delete", path: "/delete/:id", handler: this.delete },
-            { method: "get", path: "/edit/:id", handler: this.editForm }
+            { method: "get", path: "/edit/:id", handler: this.editForm },
+            { method: "get", path: "/view/:id", handler: this.view }
         ];
 
         this.configureSecureRoutes(app, BASE_ROUTE, secureRoutes);
@@ -99,6 +100,31 @@ module.exports = class ReservationController extends AbstractController {
 
         req.session.messages = [];
         req.session.errors = [];
+    }
+
+    /**
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async view(req, res) {
+        try {
+            const { id } = req.params;
+            const { errors, messages } = req.session;
+            const reservation = await this.reservationService.getById(id);
+            const car = await this.carService.getById(reservation.car);
+            const user = await this.userService.getById(reservation.user);
+
+            res.render("reservation/view/view.html", {
+                data: { reservation, user, car },
+                errors,
+                messages
+            });
+        } catch (e) {
+            res.redirect("/");
+        }
+
+        req.session.errors = [];
+        req.session.messages = [];
     }
 
     /**
