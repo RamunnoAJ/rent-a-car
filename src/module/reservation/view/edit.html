@@ -2,7 +2,7 @@
 <section class="container is-max-desktop">
     <h1 class="title is-3">Edit reservation {{ reservation.id }}</h1>
 
-    <form action="/cars/save" method="POST" autocomplete="off">
+    <form action="/reservations/save" method="POST" autocomplete="off">
         <div class="field is-hidden">
             <div class="control">
                 <input
@@ -150,6 +150,4 @@
     </form>
 </section>
 
-{% endblock %} {% block footerScripts %}
-<script src="/public/js/reservation.edit.js"></script>
 {% endblock %}
