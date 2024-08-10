@@ -1,0 +1,58 @@
+{% extends "view/layout/base.html" %} {% block body %} {% set reservation =
+data.reservation %} {% set car = data.car %} {% set user = data.user %} {% set
+car = data.car %}
+<section class="container is-max-desktop">
+    <h1 class="title is-3">View reservation {{ reservation.id }}</h1>
+
+    <form action="/cars/save" method="POST" autocomplete="off">
+        <div class="columns">
+            <div class="field column">
+                <label class="label" for="fromDate">From date:</label>
+                <div class="control">{{ reservation.fromDate }}</div>
+            </div>
+            <div class="field column">
+                <label class="label" for="toDate">To date:</label>
+                <div class="control">{{ reservation.toDate }}</div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="field column">
+                <label class="label" for="baby-chair">Has baby chair?</label>
+                <div class="control">{% if reservation.babyChair %} Yes {% else %} No {% endif %}</div>
+            </div>
+            <div class="field column">
+                <label class="label" for="snow-chain">Has snow chain?</label>
+                <div class="control">{% if reservation.snowChain %} Yes {% else %} No {% endif %}</div>
+            </div>
+        </div>
+        <div class="field ">
+            <label class="label" for="payment-method">Payment method:</label>
+            <div class="control">{{ reservation.paymentMethod.charAt(0).toUpperCase() }}{{ reservation.paymentMethod.slice(1) }}</div>
+        </div>
+        <div class="field ">
+            <label class="label" for="car"
+                >Car</label
+            >
+            <div class="control">
+                {{ car.brand }} - {{ car.model }} - year: {{ car.year }} - kms: {{ car.kms }} - {% if car.airConditioning === 1 %} AC {% else %} No AC {% endif %} - {{ car.transmission }} - {{ car.color }} - Seats: {{ car.seats }} - ${{ car.price }}
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="user">User:</label>
+            <div class="control">
+                {{ user.name }} - {{ user.email }}
+            </div>
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <a
+                    href="/reservations"
+                    class="button is-link is-light"
+                    type="button"
+                    >Go back</a
+                >
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}
