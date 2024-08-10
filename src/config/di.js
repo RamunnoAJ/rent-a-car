@@ -22,6 +22,10 @@ const {
 } = require("../module/reservation/reservation");
 
 function configureMainDatabaseAdapter() {
+    if (!fs.existsSync(process.env.DB_PATH)) {
+        fs.writeFileSync(process.env.DB_PATH, "");
+    }
+
     const db = new Sqlite3Database(
         process.env.NODE_ENV === "test" ? ":memory:" : process.env.DB_PATH
     );
