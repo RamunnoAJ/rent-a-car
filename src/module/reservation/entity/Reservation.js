@@ -54,4 +54,15 @@ module.exports = class Reservation {
 
         this.totalPrice = price;
     }
+
+    getTotalDays() {
+        let days = 0;
+
+        const date1 = new Date(this.fromDate);
+        const date2 = new Date(this.toDate);
+        const diffInMillis = Math.abs(date2 - date1);
+        days = Math.ceil(diffInMillis / (1000 * 60 * 60 * 24));
+
+        this.days = days;
+    }
 };

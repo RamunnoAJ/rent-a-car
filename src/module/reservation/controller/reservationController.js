@@ -113,6 +113,7 @@ module.exports = class ReservationController extends AbstractController {
             const user = await this.userService.getById(req.body.user);
             const car = await this.carService.getById(req.body.car);
             const reservation = fromDataToEntity({ ...req.body, user, car });
+            reservation.getTotalDays();
             reservation.getTotalPrice();
 
             const savedReservation =

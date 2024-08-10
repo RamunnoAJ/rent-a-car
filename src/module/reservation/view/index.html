@@ -38,8 +38,13 @@
             <td><a href="/users/view/{{ reservation.user }}">Link</a></td>
             <td>
                 <a
-                    href="/reservations/edit/{{ reservation.id }}"
+                    href="/reservations/view/{{ reservation.id }}"
                     class="button is-info is-dark mr-2"
+                    >View</a
+                >
+                <a
+                    href="/reservations/edit/{{ reservation.id }}"
+                    class="button is-link is-dark mr-2"
                     >Edit</a
                 >
                 <button
