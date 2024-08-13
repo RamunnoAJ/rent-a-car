@@ -48,7 +48,9 @@ module.exports = class CarRepository extends AbstractCarRepository {
 
     /** @returns {Array<import("../../entity/Car")>} */
     async getAll() {
-        const carsInstance = await this.carModel.findAll();
+        const carsInstance = await this.carModel.findAll({
+            where: { deletedAt: null }
+        });
         return carsInstance.map(fromModelToEntity);
     }
 
