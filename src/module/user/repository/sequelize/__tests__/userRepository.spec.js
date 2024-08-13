@@ -14,7 +14,11 @@ describe("userRepository", () => {
     let UserModel;
 
     beforeEach(done => {
-        sequelize = new Sequelize("sqlite::memory:", { logging: false });
+        sequelize = new Sequelize({
+            dialect: "sqlite",
+            storage: ":memory:",
+            logging: false
+        });
         UserModel = userModel.setup(sequelize);
         userRepository = new UserRepository(UserModel);
         sequelize.sync({ force: true }).then(() => done());

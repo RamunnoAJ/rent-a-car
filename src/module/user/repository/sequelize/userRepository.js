@@ -32,106 +32,20 @@ module.exports = class UserRepository extends AbstractUserRepository {
      * @param {number} id
      * @returns {import("../../entity/User")}
      */
-    getById(id) {
-        const user = this.databaseAdapter
-            .prepare(
-                `
-            SELECT
-                id,
-                created_at,
-                updated_at,
-                email,
-                token,
-                phone,
-                name,
-                nationality,
-                address,
-                driver_license,
-                role
-            FROM users WHERE id = ?
-        `
-            )
-            .get(id);
-
-        if (user === undefined) {
-            throw new UserNotFoundError(`Couldn't find user with ID: ${id}`);
-        }
-
-        return fromDbToEntity(user);
-    }
+    getById(id) {}
 
     /** @returns {Array<import("../../entity/User")>} */
-    getAll() {
-        const users = this.databaseAdapter
-            .prepare(
-                `
-                SELECT
-                    id,
-                    created_at,
-                    updated_at,
-                    email,
-                    token,
-                    phone,
-                    name,
-                    nationality,
-                    address,
-                    driver_license,
-                    role
-                FROM users
-            `
-            )
-            .all();
-
-        return users.map(user => fromDbToEntity(user));
-    }
+    getAll() {}
 
     /**
      * @param {string} email
      * @returns {import("../../entity/User")}
      */
-    getByEmail(email) {
-        const user = this.databaseAdapter
-            .prepare(
-                `
-            SELECT
-                id,
-                created_at,
-                updated_at,
-                email,
-                token,
-                phone,
-                name,
-                nationality,
-                address,
-                driver_license,
-                role
-            FROM users WHERE email = ?
-        `
-            )
-            .get(email);
-
-        if (user === undefined) {
-            throw new UserNotFoundError(
-                `Couldn't find user with email: ${email}`
-            );
-        }
-
-        return fromDbToEntity(user);
-    }
+    getByEmail(email) {}
 
     /**
      * @param {import("../../entity/User")} user
      * @returns {boolean}
      */
-    delete(user) {
-        if (!user || !user.id) {
-            throw new UserNotFoundError();
-        }
-
-        this.databaseAdapter
-            .prepare("DELETE FROM users WHERE id = ?")
-            .run(user.id);
-
-        return true;
-    }
+    delete(user) {}
 };

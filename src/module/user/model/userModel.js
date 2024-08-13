@@ -14,8 +14,7 @@ class UserModel extends Model {
                 },
                 email: {
                     type: DataTypes.STRING,
-                    allowNull: false,
-                    unique: true
+                    allowNull: false
                 },
                 token: {
                     type: DataTypes.STRING,
