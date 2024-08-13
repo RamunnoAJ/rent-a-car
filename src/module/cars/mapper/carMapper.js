@@ -53,7 +53,7 @@ function fromDataToEntity({
     price
 }) {
     return new Car(
-        id,
+        id ? Number(id) : null,
         brand,
         model,
         year,
