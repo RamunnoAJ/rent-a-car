@@ -310,8 +310,6 @@ describe("userController", () => {
         const redirectMock = jest.fn();
         const bodyMock = new User(
             null,
-            null,
-            null,
             undefined,
             undefined,
             undefined,

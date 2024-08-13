@@ -1,6 +1,8 @@
 const AbstractUserRepository = require("../abstractUserRepository");
 const { fromModelToEntity } = require("../../mapper/userMapper");
 const User = require("../../entity/User");
+const UserEmailNotDefinedError = require("../error/userEmailNotDefinedError");
+const UserIdNotDefinedError = require("../error/userIdNotDefinedError");
 const UserNotDefinedError = require("../error/userNotDefinedError");
 const UserNotFoundError = require("../error/userNotFoundError");
 
@@ -32,20 +34,53 @@ module.exports = class UserRepository extends AbstractUserRepository {
      * @param {number} id
      * @returns {import("../../entity/User")}
      */
-    getById(id) {}
+    async getById(id) {
+        if (!Number(id)) {
+            throw new UserIdNotDefinedError();
+        }
+
+        const userInstance = await this.userModel.findByPk(id);
+        if (!userInstance) {
+            throw new UserNotFoundError();
+        }
+
+        return fromModelToEntity(userInstance);
+    }
 
     /** @returns {Array<import("../../entity/User")>} */
-    getAll() {}
+    async getAll() {
+        const usersInstance = await this.userModel.findAll();
+        return usersInstance.map(fromModelToEntity);
+    }
 
     /**
      * @param {string} email
      * @returns {import("../../entity/User")}
      */
-    getByEmail(email) {}
+    async getByEmail(email) {
+        if (!email) {
+            throw new UserEmailNotDefinedError();
+        }
+
+        const userInstance = await this.userModel.findOne({ where: { email } });
+        if (!userInstance) {
+            throw new UserNotFoundError();
+        }
+
+        return fromModelToEntity(userInstance);
+    }
 
     /**
      * @param {import("../../entity/User")} user
      * @returns {boolean}
      */
-    delete(user) {}
+    async delete(user) {
+        if (!(user instanceof User)) {
+            throw new UserNotDefinedError();
+        }
+
+        return Boolean(
+            await this.userModel.destroy({ where: { id: user.id } })
+        );
+    }
 };
