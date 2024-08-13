@@ -15,9 +15,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/app.js",
+    "start": "nodemon src/app.js",
+    "dev": "nodemon --inspect --watch ./src/ -e 'js,njk,html' --verbose ./src/app.js",
     "test": "jest --coverage",
-    "test:dev": "jest --watch"
+    "test:dev": "jest --watch",
+    "schema:migrate": "npx sequelize-cli db:migrate --env development"
   },
   "keywords": [],
   "author": "",

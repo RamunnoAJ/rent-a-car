@@ -49,7 +49,9 @@ module.exports = class UserRepository extends AbstractUserRepository {
 
     /** @returns {Array<import("../../entity/User")>} */
     async getAll() {
-        const usersInstance = await this.userModel.findAll();
+        const usersInstance = await this.userModel.findAll({
+            where: { deletedAt: null }
+        });
         return usersInstance.map(fromModelToEntity);
     }
 
