@@ -1,6 +1,6 @@
 const ReservationController = require("./controller/reservationController");
 const ReservationModel = require("./model/reservationModel");
-const ReservationRepository = require("./repository/sqlite/reservationRepository");
+const ReservationRepository = require("./repository/sequelize/reservationRepository");
 const ReservationService = require("./service/reservationService");
 
 /**

@@ -10,7 +10,7 @@ const Reservation = require("../entity/Reservation");
  * @param {Object} formData
  * @returns {Reservation}
  */
-function fromDbToEntity({
+function fromModelToEntity({
     id,
     fromDate,
     toDate,
@@ -67,14 +67,12 @@ function fromDataToEntity({
         snowChain,
         paymentMethod,
         totalPrice,
-        null,
-        null,
         car,
         user
     );
 }
 
 module.exports = {
-    fromDbToEntity,
+    fromModelToEntity,
     fromDataToEntity
 };

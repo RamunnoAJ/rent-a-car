@@ -1,5 +1,4 @@
 const Reservation = require("../../entity/Reservation");
-const { fromDataToEntity } = require("../../mapper/reservationMapper");
 const ReservationController = require("../reservationController");
 
 describe("reservationController", () => {
@@ -88,7 +87,7 @@ describe("reservationController", () => {
         expect(req.session.errors).not.toEqual([]);
     });
 
-    it("should save a reservation when there is no id", async () => {
+    it("should save a reservation when there is no id and not passing babyChair nor snowChain", async () => {
         serviceMock.save.mockReset();
         userServiceMock.getById.mockReset();
         carServiceMock.getById.mockReset();
@@ -96,23 +95,15 @@ describe("reservationController", () => {
         const redirectMock = jest.fn();
         const bodyMock = {
             id: null,
-            "from-date": "2024-08-06T15:00",
-            "to-date": "2024-08-09T15:00",
-            days: 3,
-            "baby-chair": 1,
-            "snow-chain": 1,
-            "payment-method": "Cash",
-            "total-price": 3000,
             car: 1,
             user: 1
         };
 
-        userServiceMock.getById.mockResolvedValue({ id: 1, name: "User 1" });
-        carServiceMock.getById.mockResolvedValue({
-            id: 1,
-            model: "Car 1",
-            price: 1000
-        });
+        const userMockResponse = { id: 1, name: "User 1" };
+        const carMockResponse = { id: 1, model: "Car 1", price: 1000 };
+
+        userServiceMock.getById.mockResolvedValue(userMockResponse);
+        carServiceMock.getById.mockResolvedValue(carMockResponse);
 
         await controller.save(
             { body: bodyMock, session: {} },
@@ -123,17 +114,59 @@ describe("reservationController", () => {
         expect(serviceMock.save).toHaveBeenCalledWith(
             new Reservation(
                 null,
-                "2024-08-06T15:00",
-                "2024-08-09T15:00",
-                3,
-                1,
-                1,
-                "Cash",
-                43000,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                NaN,
+                carMockResponse,
+                userMockResponse
+            )
+        );
+        expect(redirectMock).toHaveBeenCalledTimes(1);
+        expect(redirectMock).toHaveBeenCalledWith("/reservations");
+    });
+
+    it("should save a reservation when there is no id", async () => {
+        serviceMock.save.mockReset();
+        userServiceMock.getById.mockReset();
+        carServiceMock.getById.mockReset();
+
+        const redirectMock = jest.fn();
+        const bodyMock = {
+            id: null,
+            "baby-chair": true,
+            "snow-chain": true,
+            car: 1,
+            user: 1
+        };
+
+        const userMockResponse = { id: 1, name: "User 1" };
+        const carMockResponse = { id: 1, model: "Car 1", price: 1000 };
+
+        userServiceMock.getById.mockResolvedValue(userMockResponse);
+        carServiceMock.getById.mockResolvedValue(carMockResponse);
+
+        await controller.save(
+            { body: bodyMock, session: {} },
+            { redirect: redirectMock }
+        );
+
+        expect(serviceMock.save).toHaveBeenCalledTimes(1);
+        expect(serviceMock.save).toHaveBeenCalledWith(
+            new Reservation(
                 null,
-                null,
-                { id: 1, model: "Car 1", price: 1000 },
-                { id: 1, name: "User 1" }
+                undefined,
+                undefined,
+                undefined,
+                true,
+                true,
+                undefined,
+                NaN,
+                carMockResponse,
+                userMockResponse
             )
         );
         expect(redirectMock).toHaveBeenCalledTimes(1);

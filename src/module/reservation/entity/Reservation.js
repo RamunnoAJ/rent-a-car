@@ -8,10 +8,11 @@ module.exports = class Reservation {
      * @param {boolean} snowChain
      * @param {string} paymentMethod
      * @param {number} totalPrice
-     * @param {string} createdAt
-     * @param {string} updatedAt
      * @param {import("../../cars/entity/Car")} car
      * @param {import("../../user/entity/User")} user
+     * @param {string} createdAt
+     * @param {string} updatedAt
+     * @param {string} deletedAt
      */
     constructor(
         id,

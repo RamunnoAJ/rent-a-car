@@ -72,7 +72,7 @@ describe("userRepository", () => {
         );
     });
 
-    it("should throw an error when searching for a car without an id", async () => {
+    it("should throw an error when searching for a user without an id", async () => {
         await expect(userRepository.getById).rejects.toThrow(
             UserIdNotDefinedError
         );
