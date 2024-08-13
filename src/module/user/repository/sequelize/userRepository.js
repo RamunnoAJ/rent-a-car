@@ -1,78 +1,31 @@
 const AbstractUserRepository = require("../abstractUserRepository");
+const { fromModelToEntity } = require("../../mapper/userMapper");
+const User = require("../../entity/User");
+const UserNotDefinedError = require("../error/userNotDefinedError");
 const UserNotFoundError = require("../error/userNotFoundError");
-const { fromDbToEntity } = require("../../mapper/userMapper");
 
 module.exports = class UserRepository extends AbstractUserRepository {
-    /** @param {import("better-sqlite3").Database} databaseAdapater */
-    constructor(databaseAdapater) {
+    /** @param {typeof import("../../model/userModel")} userModel */
+    constructor(userModel) {
         super();
-        this.databaseAdapter = databaseAdapater;
+        this.userModel = userModel;
     }
 
     /**
      * @param {import("../../entity/User")} user
      * @returns {import("../../entity/User")}
      */
-    save(user) {
-        let id;
-        const isUpdate = user.id;
-
-        if (isUpdate) {
-            id = user.id;
-
-            const statement = this.databaseAdapter.prepare(`
-                UPDATE users SET
-                    email = ?,
-                    phone = ?,
-                    name = ?,
-                    nationality = ?,
-                    address = ?,
-                    driver_license = ?,
-                    role = ?
-                WHERE id = ?
-            `);
-
-            const params = [
-                user.email,
-                user.phone,
-                user.name,
-                user.nationality,
-                user.address,
-                user.driverLicense,
-                user.role,
-                user.id
-            ];
-
-            statement.run(params);
-        } else {
-            const statement = this.databaseAdapter.prepare(`
-                INSERT INTO users(
-                    email,
-                    token,
-                    phone,
-                    name,
-                    nationality,
-                    address,
-                    driver_license,
-                    role
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            `);
-
-            const result = statement.run(
-                user.email,
-                user.token,
-                user.phone,
-                user.name,
-                user.nationality,
-                user.address,
-                user.driverLicense,
-                user.role
-            );
-
-            id = result.lastInsertRowid;
+    async save(user) {
+        if (!(user instanceof User)) {
+            throw new UserNotDefinedError();
         }
 
-        return this.getById(id);
+        const userInstance = this.userModel.build(user, {
+            isNewRecord: !user.id
+        });
+
+        await userInstance.save();
+        return fromModelToEntity(userInstance);
     }
 
     /**

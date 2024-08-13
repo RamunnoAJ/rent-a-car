@@ -1,8 +1,6 @@
 module.exports = class User {
     /**
      * @param {number} id
-     * @param {string} createdAt
-     * @param {string} updatedAt
      * @param {string} email
      * @param {string} token
      * @param {string} phone
@@ -11,11 +9,12 @@ module.exports = class User {
      * @param {string} address
      * @param {string} driverLicense
      * @param {string} role
+     * @param {string} createdAt
+     * @param {string} updatedAt
+     * @param {string} deletedAt
      */
     constructor(
         id,
-        createdAt,
-        updatedAt,
         email,
         token,
         phone,
@@ -23,11 +22,12 @@ module.exports = class User {
         nationality,
         address,
         driverLicense,
-        role
+        role,
+        createdAt,
+        updatedAt,
+        deletedAt
     ) {
         this.id = id;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.email = email;
         this.token = token;
         this.phone = phone;
@@ -36,5 +36,8 @@ module.exports = class User {
         this.address = address;
         this.driverLicense = driverLicense;
         this.role = role;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
     }
 };

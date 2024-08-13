@@ -5,6 +5,7 @@ const session = require("express-session");
 
 const {
     UserController,
+    UserModel,
     UserRepository,
     UserService
 } = require("../module/user/user");
@@ -27,6 +28,11 @@ function configureMainDatabaseAdapter() {
             process.env.NODE_ENV === "test" ? ":memory:" : process.env.DB_PATH,
         dialect: "sqlite"
     });
+}
+
+/** @param {DIContainer} container  */
+function configureUserModel(container) {
+    return UserModel.setup(container.get("MainDatabaseAdapter"));
 }
 
 /** @param {DIContainer} container  */
@@ -68,9 +74,8 @@ function addUserModuleDefinitions(container) {
             get("UserRepository"),
             get("Bcrypt")
         ),
-        UserRepository: object(UserRepository).construct(
-            get("MainDatabaseAdapter")
-        )
+        UserRepository: object(UserRepository).construct(get("UserModel")),
+        UserModel: factory(configureUserModel)
     });
 }
 

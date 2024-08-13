@@ -1,6 +1,6 @@
 const CarController = require("./controller/carController");
 const CarModel = require("./model/carModel");
-const CarRepository = require("./repository/sqlite/carRepository");
+const CarRepository = require("./repository/sequelize/carRepository");
 const CarService = require("./service/carService");
 
 /**

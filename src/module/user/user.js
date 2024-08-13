@@ -1,5 +1,6 @@
 const UserController = require("./controller/userController");
-const UserRepository = require("./repository/sqlite/userRepository");
+const UserModel = require("./model/userModel");
+const UserRepository = require("./repository/sequelize/userRepository");
 const UserService = require("./service/userService");
 
 /**
@@ -15,6 +16,7 @@ function init(app, container) {
 module.exports = {
     init,
     UserController,
+    UserModel,
     UserRepository,
     UserService
 };

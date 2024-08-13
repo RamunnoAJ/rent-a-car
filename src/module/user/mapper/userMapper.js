@@ -4,10 +4,8 @@ const User = require("../entity/User");
  * @param {Object} formData
  * @returns {User}
  */
-function fromDbToEntity({
+function fromModelToEntity({
     id,
-    created_at,
-    updated_at,
     email,
     token,
     phone,
@@ -15,12 +13,13 @@ function fromDbToEntity({
     nationality,
     address,
     driver_license,
-    role
+    role,
+    createdAt = null,
+    updatedAt = null,
+    deletedAt = null
 }) {
     return new User(
         id,
-        created_at,
-        updated_at,
         email,
         token,
         phone,
@@ -28,7 +27,10 @@ function fromDbToEntity({
         nationality,
         address,
         driver_license,
-        role
+        role,
+        createdAt,
+        updatedAt,
+        deletedAt
     );
 }
 
@@ -48,8 +50,6 @@ function fromDataToEntity({
 }) {
     return new User(
         id,
-        null,
-        null,
         email,
         password,
         phone,
@@ -62,6 +62,6 @@ function fromDataToEntity({
 }
 
 module.exports = {
-    fromDbToEntity,
+    fromModelToEntity,
     fromDataToEntity
 };

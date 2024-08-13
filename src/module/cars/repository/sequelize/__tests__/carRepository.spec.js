@@ -15,7 +15,7 @@ describe("carRepository", () => {
     let CarModel;
 
     beforeEach(done => {
-        sequelize = new Sequelize("sqlite::memory");
+        sequelize = new Sequelize("sqlite::memory:", { logging: false });
         CarModel = carModel.setup(sequelize);
         carRepository = new CarRepository(CarModel);
         sequelize.sync({ force: true }).then(() => done());
