@@ -1,4 +1,5 @@
 const CarController = require("./controller/carController");
+const CarModel = require("./model/carModel");
 const CarRepository = require("./repository/sqlite/carRepository");
 const CarService = require("./service/carService");
 
@@ -15,6 +16,7 @@ function init(app, container) {
 module.exports = {
     init,
     CarController,
+    CarModel,
     CarRepository,
     CarService
 };
