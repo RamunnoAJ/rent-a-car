@@ -22,10 +22,11 @@ module.exports = class Reservation {
         snowChain,
         paymentMethod,
         totalPrice,
+        car,
+        user,
         createdAt,
         updatedAt,
-        car,
-        user
+        deletedAt
     ) {
         this.id = id;
         this.fromDate = fromDate;
@@ -35,10 +36,11 @@ module.exports = class Reservation {
         this.snowChain = snowChain;
         this.paymentMethod = paymentMethod;
         this.totalPrice = totalPrice;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.car = car;
         this.user = user;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
     }
 
     getTotalPrice() {

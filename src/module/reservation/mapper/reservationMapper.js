@@ -1,3 +1,9 @@
+const {
+    fromModelToEntity: fromCarModelToEntity
+} = require("../../cars/mapper/carMapper");
+const {
+    fromModelToEntity: fromUserModelToEntity
+} = require("../../user/mapper/userMapper");
 const Reservation = require("../entity/Reservation");
 
 /**
@@ -6,31 +12,33 @@ const Reservation = require("../entity/Reservation");
  */
 function fromDbToEntity({
     id,
-    from_date,
-    to_date,
+    fromDate,
+    toDate,
     days,
-    baby_chair,
-    snow_chain,
-    payment_method,
-    total_price,
-    created_at,
-    updated_at,
+    babyChair,
+    snowChain,
+    paymentMethod,
+    totalPrice,
     car,
-    user
+    user,
+    createdAt = null,
+    updatedAt = null,
+    deletedAt = null
 }) {
     return new Reservation(
         id,
-        from_date,
-        to_date,
+        fromDate,
+        toDate,
         days,
-        baby_chair,
-        snow_chain,
-        payment_method,
-        total_price,
-        created_at,
-        updated_at,
-        car,
-        user
+        babyChair,
+        snowChain,
+        paymentMethod,
+        totalPrice,
+        car ? fromCarModelToEntity(car) : {},
+        user ? fromUserModelToEntity(user) : {},
+        createdAt,
+        updatedAt,
+        deletedAt
     );
 }
 

@@ -1,4 +1,5 @@
 const ReservationController = require("./controller/reservationController");
+const ReservationModel = require("./model/reservationModel");
 const ReservationRepository = require("./repository/sqlite/reservationRepository");
 const ReservationService = require("./service/reservationService");
 
@@ -15,6 +16,7 @@ function init(app, container) {
 module.exports = {
     init,
     ReservationController,
+    ReservationModel,
     ReservationRepository,
     ReservationService
 };

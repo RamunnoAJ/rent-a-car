@@ -17,6 +17,7 @@ const {
 } = require("../module/cars/cars");
 const {
     ReservationController,
+    ReservationModel,
     ReservationRepository,
     ReservationService
 } = require("../module/reservation/reservation");
@@ -38,6 +39,13 @@ function configureUserModel(container) {
 /** @param {DIContainer} container  */
 function configureCarModel(container) {
     return CarModel.setup(container.get("MainDatabaseAdapter"));
+}
+
+/** @param {DIContainer} container  */
+function configureReservationModel(container) {
+    const model = ReservationModel.setup(container.get("MainDatabaseAdapter"));
+    model.setupAssociations(CarModel, UserModel);
+    return model;
 }
 
 function configureSession() {
@@ -105,8 +113,9 @@ function addReservationModuleDefinitions(container) {
             get("ReservationRepository")
         ),
         ReservationRepository: object(ReservationRepository).construct(
-            get("MainDatabaseAdapter")
-        )
+            get("ReservationModel")
+        ),
+        ReservationModel: factory(configureReservationModel)
     });
 }
 
