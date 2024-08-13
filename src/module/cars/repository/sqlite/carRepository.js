@@ -1,4 +1,5 @@
 const AbstractCarRepository = require("../abstractCarRepository");
+const CarIdNotDefinedError = require("../error/carIdNotDefinedError");
 const CarNotFoundError = require("../error/carNotFoundError");
 const CarNotDefinedError = require("../error/carNotDefinedError");
 const { fromModelToEntity } = require("../../mapper/carMapper");
@@ -32,74 +33,34 @@ module.exports = class CarRepository extends AbstractCarRepository {
      * @param {number} id
      * @returns {import("../../entity/Car")}
      */
-    getById(id) {
-        const car = this.databaseAdapter
-            .prepare(
-                `
-            SELECT
-                id,
-                brand,
-                model,
-                year,
-                kms,
-                color,
-                air_conditioning,
-                seats,
-                transmission,
-                price,
-                created_at,
-                updated_at
-            FROM cars WHERE id = ?
-        `
-            )
-            .get(id);
-
-        if (car === undefined) {
-            throw new CarNotFoundError(`Couldn't find car with ID: ${id}`);
+    async getById(id) {
+        if (!Number(id)) {
+            throw new CarIdNotDefinedError();
         }
 
-        return fromDbToEntity(car);
+        const carInstance = await this.carModel.findByPk(id);
+        if (!carInstance) {
+            throw new CarNotFoundError();
+        }
+
+        return fromModelToEntity(carInstance);
     }
 
     /** @returns {Array<import("../../entity/Car")>} */
-    getAll() {
-        const cars = this.databaseAdapter
-            .prepare(
-                `
-                SELECT
-                    id,
-                    brand,
-                    model,
-                    year,
-                    kms,
-                    color,
-                    air_conditioning,
-                    seats,
-                    transmission,
-                    price,
-                    created_at,
-                    updated_at
-                FROM cars
-            `
-            )
-            .all();
-
-        return cars.map(car => fromDbToEntity(car));
+    async getAll() {
+        const carsInstance = await this.carModel.findAll();
+        return carsInstance.map(fromModelToEntity);
     }
 
     /**
      * @param {import("../../entity/Car")} car
      * @returns {boolean}
      */
-    delete(car) {
-        if (!car || !car.id) {
-            throw new CarNotFoundError();
+    async delete(car) {
+        if (!(car instanceof Car)) {
+            throw new CarNotDefinedError();
         }
 
-        this.databaseAdapter
-            .prepare("DELETE FROM cars WHERE id = ?")
-            .run(car.id);
-
-        return true;
+        return Boolean(await this.carModel.destroy({ where: { id: car.id } }));
     }
 };
