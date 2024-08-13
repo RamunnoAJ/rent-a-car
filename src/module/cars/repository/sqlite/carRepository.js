@@ -1,84 +1,31 @@
 const AbstractCarRepository = require("../abstractCarRepository");
 const CarNotFoundError = require("../error/carNotFoundError");
-const { fromDbToEntity } = require("../../mapper/carMapper");
+const CarNotDefinedError = require("../error/carNotDefinedError");
+const { fromModelToEntity } = require("../../mapper/carMapper");
+const Car = require("../../entity/Car");
 
 module.exports = class CarRepository extends AbstractCarRepository {
-    /** @param {import("better-sqlite3").Database} databaseAdapater */
-    constructor(databaseAdapater) {
+    /** @param {typeof import("../../model/carModel")} carModel */
+    constructor(carModel) {
         super();
-        this.databaseAdapter = databaseAdapater;
+        this.carModel = carModel;
     }
 
     /**
      * @param {import("../../entity/Car")} car
      * @returns {import("../../entity/Car")}
      */
-    save(car) {
-        let id;
-        const isUpdate = car.id;
-
-        if (isUpdate) {
-            id = car.id;
-
-            const statement = this.databaseAdapter.prepare(`
-                UPDATE cars SET
-                    brand = ?,
-                    model = ?,
-                    year = ?,
-                    kms = ?,
-                    color = ?,
-                    air_conditioning = ?,
-                    seats = ?,
-                    transmission = ?,
-                    price = ?
-                WHERE id = ?
-            `);
-
-            const params = [
-                car.brand,
-                car.model,
-                car.year,
-                car.kms,
-                car.color,
-                car.airConditioning,
-                car.seats,
-                car.transmission,
-                car.price,
-                car.id
-            ];
-
-            statement.run(params);
-        } else {
-            const statement = this.databaseAdapter.prepare(`
-                INSERT INTO cars(
-                    brand,
-                    model,
-                    year,
-                    kms,
-                    color,
-                    air_conditioning,
-                    seats,
-                    transmission,
-                    price
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `);
-
-            const result = statement.run(
-                car.brand,
-                car.model,
-                car.year,
-                car.kms,
-                car.color,
-                car.airConditioning,
-                car.seats,
-                car.transmission,
-                car.price
-            );
-
-            id = result.lastInsertRowid;
+    async save(car) {
+        if (!(car instanceof Car)) {
+            throw new CarNotDefinedError();
         }
 
-        return this.getById(id);
+        const carInstance = this.carModel.build(car, {
+            isNewRecord: !car.id
+        });
+
+        await carInstance.save();
+        return fromModelToEntity(carInstance);
     }
 
     /**

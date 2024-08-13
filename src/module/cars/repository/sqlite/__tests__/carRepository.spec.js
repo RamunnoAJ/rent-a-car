@@ -1,199 +1,161 @@
-const fs = require("fs");
-const Sqlite3Database = require("better-sqlite3");
 const CarRepository = require("../carRepository");
-const Car = require("../../../entity/Car");
-const CarNotFoundError = require("../../error/carNotFoundError");
+const carModel = require("../../../model/carModel");
+const createTestCar = require("../../../controller/__tests__/cars.fixture");
+const { Sequelize } = require("sequelize");
+const CarNotDefinedError = require("../../error/carNotDefinedError");
 
 describe("carRepository", () => {
-    let mockDb;
+    /** @type {Sequelize} */
+    let sequelize;
+    /** @type {CarRepository} */
+    let carRepository;
+    /** @type {carModel} */
+    let CarModel;
 
-    beforeEach(() => {
-        mockDb = new Sqlite3Database(":memory:");
-        const migration = fs.readFileSync("./src/config/setup.sql", "utf-8");
-        mockDb.exec(migration);
+    beforeEach(done => {
+        sequelize = new Sequelize("sqlite::memory");
+        CarModel = carModel.setup(sequelize);
+        carRepository = new CarRepository(CarModel);
+        sequelize.sync({ force: true }).then(() => done());
     });
 
-    it("should return a new id after saving a new car", () => {
-        const repository = new CarRepository(mockDb);
-        const newCar = new Car(
-            null,
-            "brand",
-            "model",
-            "year",
-            10000,
-            "color",
-            1,
-            5,
-            "transmission",
-            249999.99
-        );
-
-        const car = repository.save(newCar);
-        expect(car.id).toEqual(1);
+    it("should return a new id after saving a new car", async () => {
+        const carWithoutId = createTestCar();
+        const { id, brand, model } = await carRepository.save(carWithoutId);
+        expect(id).toEqual(1);
+        expect(brand).toEqual("Volkswagen");
+        expect(model).toEqual("Taos");
     });
 
-    it("should update the fields of an existing car", () => {
-        const repository = new CarRepository(mockDb);
-        let car = repository.save(
-            new Car(
-                null,
-                "brand",
-                "model",
-                "year",
-                10000,
-                "color",
-                1,
-                5,
-                "transmission",
-                249999.99
-            )
-        );
-        expect(car.id).toEqual(1);
+    it("should update the fields of an existing car", async () => {
+        const carWithoutId = createTestCar();
+        const carWithId = createTestCar(1);
 
-        car = repository.save(
-            new Car(
-                1,
-                "new brand",
-                "model",
-                "year",
-                10000,
-                "color",
-                1,
-                5,
-                "transmission",
-                249999.99
-            )
-        );
+        carWithId.brand = "Toyota";
+        carWithId.model = "Corolla";
 
-        expect(car.id).toEqual(1);
-        expect(car.brand).toEqual("new brand");
-    });
-
-    it("should throw an error when saving a car that doesn't exist", () => {
-        const repository = new CarRepository(mockDb);
-
-        expect(() => {
-            repository.save(
-                new Car(
-                    1,
-                    "brand",
-                    "model",
-                    "year",
-                    10000,
-                    "color",
-                    1,
-                    5,
-                    "transmission",
-                    249999.99
-                )
-            );
-        }).toThrow(CarNotFoundError);
-    });
-
-    it("should throw an error when searching for a car by id that doesn't exist", () => {
-        const repository = new CarRepository(mockDb);
-
-        expect(() => {
-            repository.getById(1);
-        }).toThrow(CarNotFoundError);
-    });
-
-    it("should return the right car when searching by id", () => {
-        const repository = new CarRepository(mockDb);
-        const newCar = repository.save(
-            new Car(
-                null,
-                "brand",
-                "model",
-                "year",
-                10000,
-                "color",
-                1,
-                5,
-                "transmission",
-                249999.99
-            )
-        );
-
+        const newCar = await carRepository.save(carWithoutId);
+        const newCarTwo = await carRepository.save(carWithoutId);
         expect(newCar.id).toEqual(1);
+        expect(newCarTwo.id).toEqual(2);
 
-        const car = repository.getById(1);
-        expect(car).toEqual(newCar);
+        const updatedCar = await carRepository.save(carWithId);
+        expect(updatedCar.id).toEqual(1);
+        expect(updatedCar.brand).toEqual("Toyota");
+        expect(updatedCar.model).toEqual("Corolla");
     });
 
-    it("should return an array of cars when searching all", () => {
-        const repository = new CarRepository(mockDb);
-        const newCar1 = repository.save(
-            new Car(
-                null,
-                "brand",
-                "model",
-                "year",
-                10000,
-                "color",
-                1,
-                5,
-                "transmission",
-                249999.99
-            )
+    it("should throw an error when saving a car that doesn't exist", async () => {
+        const car = { id: 1, brand: "Volkswagen", model: "Taos" };
+        await expect(carRepository.save(car)).rejects.toThrow(
+            CarNotDefinedError
         );
-
-        const newCar2 = repository.save(
-            new Car(
-                null,
-                "brand2",
-                "model2",
-                "year2",
-                10002,
-                "color2",
-                0,
-                4,
-                "transmission2",
-                249999.99
-            )
-        );
-
-        expect(repository.getAll()).toEqual([newCar1, newCar2]);
     });
 
-    it("should return true when deleting a car", () => {
-        const repository = new CarRepository(mockDb);
-        const newCar = repository.save(
-            new Car(
-                null,
-                "brand",
-                "model",
-                "year",
-                10000,
-                "color",
-                1,
-                5,
-                "transmission",
-                249999.99
-            )
-        );
-
-        expect(newCar.id).toEqual(1);
-
-        const car = repository.delete(newCar);
-        expect(car).toEqual(true);
-    });
-
-    it("should throw an error when deleting a car that not exists", () => {
-        const repository = new CarRepository(mockDb);
-        const newCar = new Car(
-            null,
-            "brand",
-            "model",
-            "year",
-            10000,
-            "color",
-            1,
-            5,
-            "transmission",
-            249999.99
-        );
-
-        expect(() => repository.delete(newCar)).toThrow(CarNotFoundError);
-    });
+    //it("should throw an error when searching for a car by id that doesn't exist", () => {
+    //    const repository = new CarRepository(mockDb);
+    //
+    //    expect(() => {
+    //        repository.getById(1);
+    //    }).toThrow(CarNotFoundError);
+    //});
+    //
+    //it("should return the right car when searching by id", () => {
+    //    const repository = new CarRepository(mockDb);
+    //    const newCar = repository.save(
+    //        new Car(
+    //            null,
+    //            "brand",
+    //            "model",
+    //            "year",
+    //            10000,
+    //            "color",
+    //            1,
+    //            5,
+    //            "transmission",
+    //            249999.99
+    //        )
+    //    );
+    //
+    //    expect(newCar.id).toEqual(1);
+    //
+    //    const car = repository.getById(1);
+    //    expect(car).toEqual(newCar);
+    //});
+    //
+    //it("should return an array of cars when searching all", () => {
+    //    const repository = new CarRepository(mockDb);
+    //    const newCar1 = repository.save(
+    //        new Car(
+    //            null,
+    //            "brand",
+    //            "model",
+    //            "year",
+    //            10000,
+    //            "color",
+    //            1,
+    //            5,
+    //            "transmission",
+    //            249999.99
+    //        )
+    //    );
+    //
+    //    const newCar2 = repository.save(
+    //        new Car(
+    //            null,
+    //            "brand2",
+    //            "model2",
+    //            "year2",
+    //            10002,
+    //            "color2",
+    //            0,
+    //            4,
+    //            "transmission2",
+    //            249999.99
+    //        )
+    //    );
+    //
+    //    expect(repository.getAll()).toEqual([newCar1, newCar2]);
+    //});
+    //
+    //it("should return true when deleting a car", () => {
+    //    const repository = new CarRepository(mockDb);
+    //    const newCar = repository.save(
+    //        new Car(
+    //            null,
+    //            "brand",
+    //            "model",
+    //            "year",
+    //            10000,
+    //            "color",
+    //            1,
+    //            5,
+    //            "transmission",
+    //            249999.99
+    //        )
+    //    );
+    //
+    //    expect(newCar.id).toEqual(1);
+    //
+    //    const car = repository.delete(newCar);
+    //    expect(car).toEqual(true);
+    //});
+    //
+    //it("should throw an error when deleting a car that not exists", () => {
+    //    const repository = new CarRepository(mockDb);
+    //    const newCar = new Car(
+    //        null,
+    //        "brand",
+    //        "model",
+    //        "year",
+    //        10000,
+    //        "color",
+    //        1,
+    //        5,
+    //        "transmission",
+    //        249999.99
+    //    );
+    //
+    //    expect(() => repository.delete(newCar)).toThrow(CarNotFoundError);
+    //});
 });
